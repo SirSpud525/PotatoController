@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-
 public class PotatoRobot {
     public double flDrivePower;
     public double frDrivePower;
@@ -73,6 +72,8 @@ private DcMotor armMotor;
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
     Driving(gp1);
+
+    
 
     }
 //trfP
