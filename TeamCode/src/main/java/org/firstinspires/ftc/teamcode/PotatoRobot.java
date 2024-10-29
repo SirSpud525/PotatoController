@@ -22,6 +22,7 @@ private DcMotor frontRight;
 private DcMotor backLeft;
 private DcMotor backRight;
 private DcMotor armMotor;
+private DcMotor armMover;
     public IMU imu;
 
     public void init(final HardwareMap hardwareMap) {
@@ -71,15 +72,17 @@ private DcMotor armMotor;
     }
 
     public void armMovement (Gamepad gp2){
-
         final double armPower = (gp2.right_stick_y);
+        final double armTurn = (gp2.left_stick_y);
+
+        armMotor.setPower(armPower / 10.0);
+        armMover.setPower(armTurn / 10.0);
 
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
         Driving(gp1);
-
-
+        armMovement(gp2);
 
     }
 //trfP
