@@ -67,7 +67,13 @@ private DcMotor armMotor;
         frontLeft.setPower(flDrivePower * multiplier / 4.0);
         frontRight.setPower(frDrivePower * multiplier / 4.0);
         backLeft.setPower(blDrivePower * multiplier / 4.0);
-        backRight.setPower(brDrivePower * multiplier / 4.0);
+        backRight.setPower(brDrivePower * multiplier * -1 / 4.0);
+    }
+
+    public void armMovement (Gamepad gp2){
+
+        final double armPower = (gp2.right_stick_y);
+
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
@@ -91,7 +97,7 @@ private void setDriveMode(final DcMotor.RunMode mode) {
     backLeft.setMode(mode);
     backRight.setMode(mode);
 }
-    public void driveToInches(final double inches) {
+    public void driveToInches (final double inches) {
         driveTo((int) (inches * (100 / 11.75) * 1.5));
     }
 
