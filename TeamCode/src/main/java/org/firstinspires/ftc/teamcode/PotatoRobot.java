@@ -33,6 +33,8 @@ private DcMotor armMover;
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        armMover = hardwareMap.get(DcMotor.class, "armMover");
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -78,9 +80,16 @@ private DcMotor armMover;
         final double armPower = (gp2.right_stick_y);
         final double armTurn = (gp2.left_stick_y);
 
-        armMotor.setPower(armPower / 10.0);
-        armMover.setPower(armTurn / 10.0);
+        armMotor.setPower(armPower);
 
+        double absolute = Math.abs(armTurn);
+        double sign = armTurn / absolute;
+
+        if (absolute <= 0.1) {
+            armMover.setPower(0.0);
+        } else {
+            armMover.setPower(sign * 0.4);
+        }
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
