@@ -71,9 +71,9 @@ private DcMotor armMotor;
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
-    Driving(gp1);
+        Driving(gp1);
 
-    
+
 
     }
 //trfP
