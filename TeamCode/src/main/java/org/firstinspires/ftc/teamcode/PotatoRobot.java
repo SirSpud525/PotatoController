@@ -25,6 +25,8 @@ private DcMotor armMotor;
 private DcMotor armMover;
     public IMU imu;
 
+    //potato
+
     public void init(final HardwareMap hardwareMap) {
         // Initialize hardware map
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -69,6 +71,7 @@ private DcMotor armMover;
         frontRight.setPower(frDrivePower * multiplier / 4.0);
         backLeft.setPower(blDrivePower * multiplier / 4.0);
         backRight.setPower(brDrivePower * multiplier * -1 / 4.0);
+        //extra -1 in back right because of robot turning that motor in reverse for some reason
     }
 
     public void armMovement (Gamepad gp2){
@@ -85,7 +88,6 @@ private DcMotor armMover;
         armMovement(gp2);
 
     }
-//trfP
 
     private void drive(final double pow){
         frontLeft.setPower(pow);
