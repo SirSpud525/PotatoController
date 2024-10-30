@@ -24,6 +24,7 @@ private DcMotor backLeft;
 private DcMotor backRight;
 private DcMotor armMotor;
 private DcMotor armMover;
+private Servo claw;
     public IMU imu;
 
     //potato
@@ -36,13 +37,21 @@ private DcMotor armMover;
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMover = hardwareMap.get(DcMotor.class, "armMover");
+        claw = hardwareMap.get(Servo.class, "claw");
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //encoders
+        setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setTargetPosition(0);
+        backLeft.setTargetPosition(0);
+        backRight.setTargetPosition(0);
+        frontRight.setTargetPosition(0);
+
+        //zero power behavior
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -75,7 +84,6 @@ private DcMotor armMover;
         frontRight.setPower(frDrivePower * multiplier / 4.0);
         backLeft.setPower(blDrivePower * multiplier / 4.0);
         backRight.setPower(brDrivePower * multiplier / 4.0);
-        //extra -1 in back right because of robot turning that motor in reverse for some reason
     }
 
     public void armMovement (Gamepad gp2){
@@ -94,9 +102,28 @@ private DcMotor armMover;
         }
     }
 
+    public void clawClawing(Gamepad gp2){
+        final double clawRight = (gp2.right_trigger);
+        final double clawLeft = (gp2.left_trigger);
+
+        if (clawLeft >= 0.1 ){
+            if (clawRight >= 0.1){
+            }
+            else{
+            claw.setPosition(0.0);
+            }
+        }
+        else {
+            if (clawRight >= 0.1){
+                claw.setPosition(1.0);
+            }
+        }
+    }
+
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
         Driving(gp1);
         armMovement(gp2);
+        clawClawing(gp2);
 
     }
 
@@ -123,6 +150,7 @@ private void setDriveMode(final DcMotor.RunMode mode) {
         this.imu.resetYaw();
 
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontLeft.setTargetPosition(pos);
         frontRight.setTargetPosition(pos);
@@ -130,6 +158,11 @@ private void setDriveMode(final DcMotor.RunMode mode) {
         backRight.setTargetPosition(pos);
 
         setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(0.5);
+        backLeft.setPower(0.5);
+        frontRight.setPower(0.5);
+        backRight.setPower(0.5);
 
 //        final int delay = 20;
 //
