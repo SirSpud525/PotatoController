@@ -10,8 +10,8 @@ public class AutoRight extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     robot.init(hardwareMap);
     waitForStart();
-    robot.driveToInches(6, telemetry);
-    robot.strafe(24);
+    robot.driveToInches(30, telemetry);
+    robot.strafe(1150);
     stop();
   }
 }

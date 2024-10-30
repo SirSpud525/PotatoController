@@ -44,6 +44,8 @@ private Servo claw;
         backRight.setDirection(DcMotor.Direction.REVERSE);
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        claw.setPosition(0.0);
+
         //encoders
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setTargetPosition(0);
@@ -80,10 +82,10 @@ private Servo claw;
         blDrivePower = (drive - strafe + turn);
         brDrivePower = (drive + strafe - turn);
 
-        frontLeft.setPower(flDrivePower * multiplier / 4.0);
-        frontRight.setPower(frDrivePower * multiplier / 4.0);
-        backLeft.setPower(blDrivePower * multiplier / 4.0);
-        backRight.setPower(brDrivePower * multiplier / 4.0);
+        frontLeft.setPower(flDrivePower * multiplier / 1.5);
+        frontRight.setPower(frDrivePower * multiplier / 1.5);
+        backLeft.setPower(blDrivePower * multiplier / 1.5);
+        backRight.setPower(brDrivePower * multiplier / 1.5);
     }
 
     public void armMovement (Gamepad gp2){
@@ -152,44 +154,32 @@ private void setDriveMode(final DcMotor.RunMode mode) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        frontLeft.setTargetPosition(pos);
-        frontRight.setTargetPosition(pos);
-        backLeft.setTargetPosition(pos);
-        backRight.setTargetPosition(pos);
+        final int delay = 20;
 
-        setDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (Math.abs(pos - frontLeft.getCurrentPosition()) > 10 || Math.abs(pos - frontRight.getCurrentPosition()) > 10) {
+            int flDistance = pos - frontLeft.getCurrentPosition();
+            int frDistance = pos - frontRight.getCurrentPosition();
+            int blDistance = pos - backLeft.getCurrentPosition();
+            int brDistance = pos - backRight.getCurrentPosition();
 
-        frontLeft.setPower(0.5);
-        backLeft.setPower(0.5);
-        frontRight.setPower(0.5);
-        backRight.setPower(0.5);
+            telemetry.addData("dist", flDistance);
+            telemetry.update();
 
-//        final int delay = 20;
-//
-//        while (Math.abs(pos - frontLeft.getCurrentPosition()) > 10 || Math.abs(pos - frontRight.getCurrentPosition()) > 10) {
-//            int flDistance = pos - frontLeft.getCurrentPosition();
-//            int frDistance = pos - frontRight.getCurrentPosition();
-//            int blDistance = pos - backLeft.getCurrentPosition();
-//            int brDistance = pos - backRight.getCurrentPosition();
-//
-//            telemetry.addData("dist", flDistance);
-//            telemetry.update();
-//
-//            flDrivePower = (double) flDistance / (double) Math.abs(pos);
-//            blDrivePower = (double) blDistance / (double) Math.abs(pos);
-//            frDrivePower = (double) frDistance / (double) Math.abs(pos);
-//            brDrivePower = (double) brDistance / (double) Math.abs(pos);
-//
-//            frontLeft.setPower(flDrivePower / 3);
-//            frontRight.setPower(frDrivePower / 3);
-//            backLeft.setPower(blDrivePower / 3);
-//            backRight.setPower(brDrivePower / 3);
-//
-//            try {
-//                Thread.sleep(delay);
-//            } catch (InterruptedException e) {
-//            }
-//        }
+            flDrivePower = (double) flDistance / (double) Math.abs(pos);
+            blDrivePower = (double) blDistance / (double) Math.abs(pos);
+            frDrivePower = (double) frDistance / (double) Math.abs(pos);
+            brDrivePower = (double) brDistance / (double) Math.abs(pos);
+
+            frontLeft.setPower(flDrivePower / 3);
+            frontRight.setPower(frDrivePower / 3);
+            backLeft.setPower(blDrivePower / 3);
+            backRight.setPower(brDrivePower / 3);
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+            }
+        }
     }
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
