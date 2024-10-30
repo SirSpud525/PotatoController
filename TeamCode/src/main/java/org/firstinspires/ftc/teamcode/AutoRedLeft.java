@@ -11,11 +11,11 @@ public class AutoRedLeft extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     robot.init(hardwareMap);
     waitForStart();
-    robot.driveToInches(70, telemetry);
-    robot.strafe(96);
+    robot.driveToInches(6, telemetry);
+    robot.strafe(56);
     stop();
   }
 //move foward 6 in, strafe right 96 in
 
-  //test
+  //Potatoes are bad
 }
