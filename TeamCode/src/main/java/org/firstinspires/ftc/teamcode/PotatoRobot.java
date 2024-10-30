@@ -90,7 +90,7 @@ private DcMotor armMover;
         if (absolute <= 0.1) {
             armMover.setPower(0.0);
         } else {
-            armMover.setPower(sign * 0.4);
+            armMover.setPower(sign * 0.2);
         }
     }
 

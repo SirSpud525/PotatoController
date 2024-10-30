@@ -14,6 +14,7 @@ public class AutoRight extends LinearOpMode {
     robot.strafe(24);
     stop();
   }
+}
 
 
 // Move forward 6 inches, strafe 24 inches
