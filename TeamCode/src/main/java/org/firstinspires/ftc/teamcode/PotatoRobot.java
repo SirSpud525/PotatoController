@@ -42,11 +42,11 @@ private Servo claw;
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         claw.setPosition(0.0);
 
         //encoders
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setTargetPosition(0);
         backLeft.setTargetPosition(0);
@@ -100,7 +100,7 @@ private Servo claw;
         if (absolute <= 0.1) {
             armMover.setPower(0.0);
         } else {
-            armMover.setPower(sign * 0.2);
+            armMover.setPower(sign * 0.25);
         }
     }
 
@@ -126,7 +126,6 @@ private Servo claw;
         Driving(gp1);
         armMovement(gp2);
         clawClawing(gp2);
-
     }
 
     private void drive(final double pow){
