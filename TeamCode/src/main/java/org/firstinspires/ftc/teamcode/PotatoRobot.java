@@ -27,7 +27,7 @@ private DcMotor armMover;
 private Servo claw;
     public IMU imu;
 
-    //potato
+    //potatoes are bad
 
     public void init(final HardwareMap hardwareMap) {
         // Initialize hardware map
