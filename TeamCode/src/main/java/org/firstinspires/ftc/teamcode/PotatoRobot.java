@@ -27,7 +27,7 @@ private DcMotor armMover;
 private Servo claw;
     public IMU imu;
 
-    //potatoes are bad
+    //potato
 
     public void init(final HardwareMap hardwareMap) {
         // Initialize hardware map
@@ -58,6 +58,8 @@ private Servo claw;
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
