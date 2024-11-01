@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "AutoRedLeft", group = "Left")
+@Autonomous(name = "AutoLeft", group = "Left")
 public class AutoRedLeft extends LinearOpMode {
 
   PotatoRobot robot = new PotatoRobot();
