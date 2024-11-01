@@ -100,7 +100,7 @@ private Servo claw;
         if (absolute <= 0.1) {
             armMover.setPower(0.0);
         } else {
-            armMover.setPower(sign * 0.25);
+            armMover.setPower(sign * 0.35);
         }
     }
 
