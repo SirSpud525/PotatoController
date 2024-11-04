@@ -43,7 +43,7 @@ private Servo claw;
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        claw.setPosition(0.0);
+        claw.setPosition(1.0);
 
         //encoders
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
