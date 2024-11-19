@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,7 +25,7 @@ private DcMotor backLeft;
 private DcMotor backRight;
 private DcMotor armMotor;
 private DcMotor armMover;
-private Servo claw;
+private CRServo intake;
     public IMU imu;
 
     //potato
@@ -37,13 +38,11 @@ private Servo claw;
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMover = hardwareMap.get(DcMotor.class, "armMover");
-        claw = hardwareMap.get(Servo.class, "claw");
+        intake = hardwareMap.get(CRServo.class, "claw");
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-
-        claw.setPosition(1.0);
 
         //encoders
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -107,21 +106,15 @@ private Servo claw;
     }
 
     public void clawClawing(Gamepad gp2){
-        final double clawRight = (gp2.right_trigger);
-        final double clawLeft = (gp2.left_trigger);
 
-        if (clawLeft >= 0.1 ){
-            if (clawRight >= 0.1){
-            }
-            else{
-            claw.setPosition(0.0);
-            }
+        final double intakeOn = (gp2.right_trigger);
+
+        if (intakeOn >= 0.1){
+            intake.setPower (0.3);
+        } else {
+            intake.setPower (0.0);
         }
-        else {
-            if (clawRight >= 0.1){
-                claw.setPosition(1.0);
-            }
-        }
+
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2) {
