@@ -26,7 +26,7 @@ private DcMotor backRight;
 private DcMotor armMotor;
 private DcMotor armMover;
 private CRServo intake;
-    public IMU imu;
+public IMU imu;
 
     //potato
 
@@ -108,11 +108,20 @@ private CRServo intake;
     public void clawClawing(Gamepad gp2){
 
         final double intakeOn = (gp2.right_trigger);
+        final double intakeR = (gp2.left_trigger);
 
         if (intakeOn >= 0.1){
-            intake.setPower (0.3);
+            if (intakeR >= 0.1){
+                intake.setPower (0.0);
+            } else {
+                intake.setPower (0.3);
+            }
         } else {
-            intake.setPower (0.0);
+            if (intakeR >= 0.1){
+                intake.setPower (-0.3);
+            } else {
+                intake.setPower (0.0);
+            }
         }
 
     }
