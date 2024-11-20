@@ -139,12 +139,13 @@ public IMU imu;
         backRight.setPower(pow);
     }
 
-private void setDriveMode(final DcMotor.RunMode mode) {
-    frontLeft.setMode(mode);
-    frontRight.setMode(mode);
-    backLeft.setMode(mode);
-    backRight.setMode(mode);
-}
+    private void setDriveMode(final DcMotor.RunMode mode) {
+        frontLeft.setMode(mode);
+        frontRight.setMode(mode);
+        backLeft.setMode(mode);
+        backRight.setMode(mode);
+    }
+
     public void driveToInches (final double inches, Telemetry telemetry) {
         driveTo((int) (inches * (100 / 11.75) * 1.5), telemetry);
     }
@@ -152,14 +153,14 @@ private void setDriveMode(final DcMotor.RunMode mode) {
     public void driveTo(final int pos, Telemetry telemetry) {
         if (pos == 0) return;
 
-        this.imu.resetYaw();
-
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         final int delay = 20;
+        final int THRESHOLD = 20;
+        final double ADDITIONAL_SPEED = 0.1;
 
-        while (Math.abs(pos - frontLeft.getCurrentPosition()) > 10 || Math.abs(pos - frontRight.getCurrentPosition()) > 10) {
+        while (Math.abs(pos - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(pos - frontRight.getCurrentPosition()) > THRESHOLD) {
             int flDistance = pos - frontLeft.getCurrentPosition();
             int frDistance = pos - frontRight.getCurrentPosition();
             int blDistance = pos - backLeft.getCurrentPosition();
@@ -173,16 +174,18 @@ private void setDriveMode(final DcMotor.RunMode mode) {
             frDrivePower = (double) frDistance / (double) Math.abs(pos);
             brDrivePower = (double) brDistance / (double) Math.abs(pos);
 
-            frontLeft.setPower(flDrivePower / 3);
-            frontRight.setPower(frDrivePower / 3);
-            backLeft.setPower(blDrivePower / 3);
-            backRight.setPower(brDrivePower / 3);
+            frontLeft.setPower(flDrivePower / 3 + ADDITIONAL_SPEED);
+            frontRight.setPower(frDrivePower / 3 + ADDITIONAL_SPEED);
+            backLeft.setPower(blDrivePower / 3 + ADDITIONAL_SPEED);
+            backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
 
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
             }
         }
+
+        drive(0.0);
     }
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
