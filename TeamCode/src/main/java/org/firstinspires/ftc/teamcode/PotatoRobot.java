@@ -28,6 +28,8 @@ private DcMotor armMover;
 private CRServo intake;
 public IMU imu;
 
+private DcMotor spareMotor; //Antonios code
+    
     //potato
 
     public void init(final HardwareMap hardwareMap) {
@@ -39,6 +41,7 @@ public IMU imu;
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMover = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
+        spareMotor = hardwareMap.get(DcMotor.class "spareMotor"); //Antonios code
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -87,6 +90,17 @@ public IMU imu;
         frontRight.setPower(frDrivePower * multiplier / 1.5);
         backLeft.setPower(blDrivePower * multiplier / 1.5);
         backRight.setPower(brDrivePower * multiplier / 1.5);
+    }
+
+    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code 
+        final double booleann = (gp1.a);
+        
+        if (booleann = true){
+            spareMotor.setPower(0.5);
+        }
+        else {
+            spareMotor.setPower(0.0);
+        }
     }
 
     public void armMovement (Gamepad gp2){
