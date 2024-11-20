@@ -256,4 +256,9 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
     }
 
+public void intake(double rotations){
+    
+    
+}
+    
 }
