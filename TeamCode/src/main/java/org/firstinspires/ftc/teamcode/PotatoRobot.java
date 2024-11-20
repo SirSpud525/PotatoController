@@ -193,8 +193,10 @@ public IMU imu;
 
         int flBrPos = pos;
         int frBlPos = -pos;
+        final double extra = 0.1;
+        final double tickDistance = 20;
 
-        while (Math.abs(flBrPos - backRight.getCurrentPosition()) > 10 || Math.abs(flBrPos - frontLeft.getCurrentPosition()) > 10) {
+        while (Math.abs(flBrPos - backRight.getCurrentPosition()) > tickDistance || Math.abs(flBrPos - frontLeft.getCurrentPosition()) > tickDistance) {
             int flDistance = flBrPos - frontLeft.getCurrentPosition();
             int frDistance = frBlPos - frontRight.getCurrentPosition();
             int blDistance = frBlPos - backLeft.getCurrentPosition();
@@ -205,10 +207,10 @@ public IMU imu;
             frDrivePower = (double)frDistance / (double)Math.abs(frBlPos);
             brDrivePower = (double)brDistance / (double)Math.abs(flBrPos);
 
-            frontLeft.setPower(flDrivePower / 5);
-            frontRight.setPower(frDrivePower / 5);
-            backLeft.setPower(blDrivePower / 5);
-            backRight.setPower(brDrivePower / 5);
+            frontLeft.setPower(flDrivePower / 5 + extra);
+            frontRight.setPower(frDrivePower / 5 + extra);
+            backLeft.setPower(blDrivePower / 5 + extra);
+            backRight.setPower(brDrivePower / 5 + extra);
         }
 
         drive(0.0);

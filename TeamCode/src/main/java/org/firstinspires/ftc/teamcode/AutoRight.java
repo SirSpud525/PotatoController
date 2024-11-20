@@ -12,6 +12,7 @@ public class AutoRight extends LinearOpMode {
     waitForStart();
     robot.driveToInches(30, telemetry);
     robot.strafe(1150);
+    robot.driveToInches(-30, telemetry);
     stop();
   }
 }

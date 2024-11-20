@@ -13,6 +13,7 @@ public class AutoLeft extends LinearOpMode {
         waitForStart();
         robot.driveToInches(30, telemetry);
         robot.strafe(4600);
+        robot.driveToInches(-30, telemetry);
         stop();
     }
 
