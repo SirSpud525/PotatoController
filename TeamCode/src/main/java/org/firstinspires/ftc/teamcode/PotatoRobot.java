@@ -28,8 +28,6 @@ private DcMotor armMover;
 private CRServo intake;
 public IMU imu;
 
-private DcMotor spareMotor; //Antonios code
-    
     //potato
 
     public void init(final HardwareMap hardwareMap) {
@@ -41,7 +39,6 @@ private DcMotor spareMotor; //Antonios code
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMover = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
-        spareMotor = hardwareMap.get(DcMotor.class "spareMotor"); //Antonios code
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -92,16 +89,16 @@ private DcMotor spareMotor; //Antonios code
         backRight.setPower(brDrivePower * multiplier / 1.5);
     }
 
-    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code 
-        final double booleann = (gp1.a);
-        
-        if (booleann = true){
-            spareMotor.setPower(0.5);
-        }
-        else {
-            spareMotor.setPower(0.0);
-        }
-    }
+//    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code
+//        final boolean yes = (gp1.a);
+//
+//        if (yes == true){
+//            frontLeft.setPower(0.5);
+//        }
+//        else {
+//            frontLeft.setPower(0.0);
+//        }
+//    }
 
     public void armMovement (Gamepad gp2){
         final double armPower = (gp2.right_stick_y);
@@ -221,10 +218,10 @@ private DcMotor spareMotor; //Antonios code
             frDrivePower = (double)frDistance / (double)Math.abs(frBlPos);
             brDrivePower = (double)brDistance / (double)Math.abs(flBrPos);
 
-            frontLeft.setPower(flDrivePower / 5 + extra);
-            frontRight.setPower(frDrivePower / 5 + extra);
-            backLeft.setPower(blDrivePower / 5 + extra);
-            backRight.setPower(brDrivePower / 5 + extra);
+            frontLeft.setPower(flDrivePower / 3 + extra);
+            frontRight.setPower(frDrivePower / 3 + extra);
+            backLeft.setPower(blDrivePower / 3 + extra);
+            backRight.setPower(brDrivePower / 3 + extra);
         }
 
         drive(0.0);
