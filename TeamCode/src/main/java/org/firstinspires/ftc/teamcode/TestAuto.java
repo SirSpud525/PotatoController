@@ -2,18 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-@Autonomous(name = "AutoLeft", group = "Left")
-public class AutoLeft extends LinearOpMode {
+@Autonomous(name = "TestAuto", group = "Test")
+public class TestAuto extends LinearOpMode{
 
     PotatoRobot robot = new PotatoRobot();
-
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
         waitForStart();
-        robot.driveToInches(30, telemetry);
-        robot.strafe(4300);
-        robot.driveToInches(-30, telemetry);
+        //code here
+
+        //code ends
         stop();
     }
 

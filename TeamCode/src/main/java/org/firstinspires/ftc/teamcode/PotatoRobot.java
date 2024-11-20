@@ -205,7 +205,7 @@ public IMU imu;
         int flBrPos = pos;
         int frBlPos = -pos;
         final double extra = 0.1;
-        final double tickDistance = 20;
+        final double tickDistance = 25;
 
         while (Math.abs(flBrPos - backRight.getCurrentPosition()) > tickDistance || Math.abs(flBrPos - frontLeft.getCurrentPosition()) > tickDistance) {
             int flDistance = flBrPos - frontLeft.getCurrentPosition();
@@ -218,14 +218,42 @@ public IMU imu;
             frDrivePower = (double)frDistance / (double)Math.abs(frBlPos);
             brDrivePower = (double)brDistance / (double)Math.abs(flBrPos);
 
-            frontLeft.setPower(flDrivePower / 3 + extra);
-            frontRight.setPower(frDrivePower / 3 + extra);
-            backLeft.setPower(blDrivePower / 3 + extra);
-            backRight.setPower(brDrivePower / 3 + extra);
+            frontLeft.setPower(flDrivePower / 2 + extra);
+            frontRight.setPower(frDrivePower / 2 - extra);
+            backLeft.setPower(blDrivePower / 2 - extra);
+            backRight.setPower(brDrivePower / 2 + extra);
         }
 
         drive(0.0);
 
         try {Thread.sleep(500);} catch (InterruptedException e) {}
     }
+
+    public void armTurn(double turn){
+
+        final double tickDist = 15;
+        final double extraArm = 0.5;
+
+while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
+    double distance = turn - armMover.getCurrentPosition();
+    double armMoverPower = distance/Math.abs(turn);
+    armMover.setPower(armMoverPower / 1.75 + extraArm);
+}
+
+    }
+
+    public void armExtend(double extend){
+
+        final double tickErr = 15;
+        final double extraExtend = 0.5;
+
+        while (Math.abs(extend - armMover.getCurrentPosition()) > tickErr){
+            double distance = extend - armMover.getCurrentPosition();
+            double armMoverPower = distance/Math.abs(extend);
+            armMover.setPower(armMoverPower / 1.75 + extraExtend);
+        }
+
+
+    }
+
 }
