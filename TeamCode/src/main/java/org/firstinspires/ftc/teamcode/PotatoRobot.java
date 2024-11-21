@@ -26,6 +26,7 @@ private DcMotor backRight;
 private DcMotor armMotor;
 private DcMotor armMover;
 private CRServo intake;
+private CRServo intake2;
 public IMU imu;
 
     //potato
@@ -39,6 +40,7 @@ public IMU imu;
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armMover = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
+        intake2 = hardwareMap.get(CRServo.class, "intake2");
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -124,14 +126,18 @@ public IMU imu;
         if (intakeOn >= 0.1){
             if (intakeR >= 0.1){
                 intake.setPower (0.0);
+                intake2.setPower(0.0);
             } else {
                 intake.setPower (0.3);
+                intake2.setPower(-0.3);
             }
         } else {
             if (intakeR >= 0.1){
                 intake.setPower (-0.3);
+                intake2.setPower(0.3);
             } else {
                 intake.setPower (0.0);
+                intake2.setPower(0.0);
             }
         }
 
