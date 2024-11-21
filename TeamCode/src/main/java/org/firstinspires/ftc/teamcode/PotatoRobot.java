@@ -31,6 +31,8 @@ public IMU imu;
 
     //potato
 
+    //var
+
     public void init(final HardwareMap hardwareMap) {
         // Initialize hardware map
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -262,7 +264,7 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
     }
 //Antonio is cool
-public void intakeEnable(double rotate, final seconds){ //0 corresponds to closing, 1 corresponds to opening
+public void intakeEnable(double rotate, final int seconds){ //0 corresponds to closing, 1 corresponds to opening
         final double rotationType = rotate;
 
         if (rotationType >= 0.1) {
