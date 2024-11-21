@@ -262,16 +262,22 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
     }
 //Antonio is cool
-public void intakeEnable(double rotate){ //0 corresponds to closing, 1 corresponds to opening
+public void intakeEnable(double rotate, final length){ //0 corresponds to closing, 1 corresponds to opening
         final double rotationType = rotate;
 
-    if (rotationType >= 0.1){
-        intake.setPower (0.3);
-        intake2.setPower (-0.3);
-    } else {
-        intake.setPower (-0.3);
-        intake2.setPower (0.3);
-    }
+        if (rotationType >= 0.1) {
+            intake.setPower(0.3);
+            intake2.setPower(-0.3);
+        } else {
+            intake.setPower(-0.3);
+            intake2.setPower(0.3);
+        }
+
+        try {Thread.sleep(length * 1000);} catch (InterruptedException e) {}
+
+    intake.setPower (0.0);
+    intake2.setPower (0.0);
 
     }
+
 }
