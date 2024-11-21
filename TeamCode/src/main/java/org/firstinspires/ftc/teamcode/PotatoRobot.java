@@ -262,8 +262,17 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
     }
 
-public void intake(double rotations){
-    
+public void wholeIntake.setpower(double rotate){ //0 corresponds to closing, 1 corresponds to opening
+        final double rotationType = rotate
+
+    if (rotationType >= 0.1){
+        intake.setpower (0.3);
+        intake2.setpower (-0.3);
+    } else {
+        intake.setpower (-0.3);
+        intake2.setpower (0.3);
+    }
+
     
 }
     
