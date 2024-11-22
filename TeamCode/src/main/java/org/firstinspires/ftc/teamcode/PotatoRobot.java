@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 public class PotatoRobot {
+    final String robotName = "Potato";
     public double flDrivePower;
     public double frDrivePower;
     public double brDrivePower;
@@ -130,13 +131,13 @@ public IMU imu;
                 intake.setPower (0.0);
                 intake2.setPower(0.0);
             } else {
-                intake.setPower (0.3);
-                intake2.setPower(-0.3);
+                intake.setPower (-0.3);
+                intake2.setPower(0.3);
             }
         } else {
             if (intakeR >= 0.1){
-                intake.setPower (-0.3);
-                intake2.setPower(0.3);
+                intake.setPower (0.3);
+                intake2.setPower(-0.3);
             } else {
                 intake.setPower (0.0);
                 intake2.setPower(0.0);
@@ -268,11 +269,11 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
         final double rotationType = rotate;
 
         if (rotationType >= 0.1) {
-            intake.setPower(0.3);
-            intake2.setPower(-0.3);
-        } else {
             intake.setPower(-0.3);
             intake2.setPower(0.3);
+        } else {
+            intake.setPower(0.3);
+            intake2.setPower(-0.3);
         }
 
         try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
@@ -281,4 +282,13 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
        intake2.setPower (0.0);
 
     }
+
+    public void powerArm(double power,int length){
+
+    }
+
+    public void powerTurn(double powerT, int lengthT){
+
+    }
+
 }
