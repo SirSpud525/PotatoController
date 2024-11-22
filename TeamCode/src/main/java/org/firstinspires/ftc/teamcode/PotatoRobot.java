@@ -276,7 +276,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
             intake2.setPower(-0.3);
         }
 
-        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
 
        intake.setPower (0.0);
        intake2.setPower (0.0);
@@ -285,10 +285,19 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
 
     public void powerArm(double power,int length){
 
+        armMotor.setPower(power);
+
+        try {Thread.sleep(length);} catch (InterruptedException e) {}
+
+        armMotor.setPower(0.0);
     }
 
     public void powerTurn(double powerT, int lengthT){
+        armMover.setPower(powerT);
 
+        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
+
+        armMover.setPower(0.0);
     }
 
 }
