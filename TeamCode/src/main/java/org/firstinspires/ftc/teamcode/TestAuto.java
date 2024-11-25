@@ -10,7 +10,7 @@ public class TestAuto extends LinearOpMode{
         robot.init(hardwareMap);
         waitForStart();
         //code here
-
+robot.turn(3);
         //code ends
         stop();
     }

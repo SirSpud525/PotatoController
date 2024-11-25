@@ -207,6 +207,40 @@ public IMU imu;
 
         drive(0.0);
     }
+
+    public void turn(final int posT) {
+        if (posT == 0) return;
+
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        final int delay = 20;
+        final int THRESHOLD = 20;
+        final double ADDITIONAL_SPEED = 0.1;
+
+        while (Math.abs(posT - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(posT - frontRight.getCurrentPosition()) > THRESHOLD) {
+            int flDistance = posT - frontLeft.getCurrentPosition();
+            int frDistance = posT - frontRight.getCurrentPosition();
+            int blDistance = posT - backLeft.getCurrentPosition();
+            int brDistance = posT - backRight.getCurrentPosition();
+
+            flDrivePower = (double) flDistance / (double) Math.abs(posT);
+            blDrivePower = (double) blDistance / (double) Math.abs(posT);
+            frDrivePower = (double) frDistance / (double) Math.abs(posT);
+            brDrivePower = (double) brDistance / (double) Math.abs(posT);
+
+            frontLeft.setPower(flDrivePower / 3 + ADDITIONAL_SPEED);
+            frontRight.setPower((frDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+            backLeft.setPower((blDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+            backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -264,7 +298,7 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
 
     }
-//Antonio is cool
+//potatoes
 public void intakeEnable(double rotate, final int seconds){ //0 corresponds to closing, 1 corresponds to opening
         final double rotationType = rotate;
 
@@ -282,7 +316,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
        intake2.setPower (0.0);
 
     }
-
+//next two functions are power based auto, only use in emergency or lack of encoders
     public void powerArm(double power,int length){
 
         armMotor.setPower(power);
