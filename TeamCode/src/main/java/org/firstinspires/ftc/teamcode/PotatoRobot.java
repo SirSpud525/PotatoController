@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 public class PotatoRobot {
+    final String robotName = "Potato";
     public double flDrivePower;
     public double frDrivePower;
     public double brDrivePower;
@@ -130,13 +131,13 @@ public IMU imu;
                 intake.setPower (0.0);
                 intake2.setPower(0.0);
             } else {
-                intake.setPower (0.3);
-                intake2.setPower(-0.3);
+                intake.setPower (-0.3);
+                intake2.setPower(0.3);
             }
         } else {
             if (intakeR >= 0.1){
-                intake.setPower (-0.3);
-                intake2.setPower(0.3);
+                intake.setPower (0.3);
+                intake2.setPower(-0.3);
             } else {
                 intake.setPower (0.0);
                 intake2.setPower(0.0);
@@ -206,6 +207,40 @@ public IMU imu;
 
         drive(0.0);
     }
+
+    public void turn(final int posT) {
+        if (posT == 0) return;
+
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        final int delay = 20;
+        final int THRESHOLD = 20;
+        final double ADDITIONAL_SPEED = 0.1;
+
+        while (Math.abs(posT - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(posT - frontRight.getCurrentPosition()) > THRESHOLD) {
+            int flDistance = posT - frontLeft.getCurrentPosition();
+            int frDistance = posT - frontRight.getCurrentPosition();
+            int blDistance = posT - backLeft.getCurrentPosition();
+            int brDistance = posT - backRight.getCurrentPosition();
+
+            flDrivePower = (double) flDistance / (double) Math.abs(posT);
+            blDrivePower = (double) blDistance / (double) Math.abs(posT);
+            frDrivePower = (double) frDistance / (double) Math.abs(posT);
+            brDrivePower = (double) brDistance / (double) Math.abs(posT);
+
+            frontLeft.setPower(flDrivePower / 3 + ADDITIONAL_SPEED);
+            frontRight.setPower((frDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+            backLeft.setPower((blDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+            backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -263,22 +298,40 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
 
     }
-//Antonio is cool
+//MASHED POTATOESSSSSSSS
 public void intakeEnable(double rotate, final int seconds){ //0 corresponds to closing, 1 corresponds to opening
         final double rotationType = rotate;
 
         if (rotationType >= 0.1) {
-            intake.setPower(0.3);
-            intake2.setPower(-0.3);
-        } else {
             intake.setPower(-0.3);
             intake2.setPower(0.3);
+        } else {
+            intake.setPower(0.3);
+            intake2.setPower(-0.3);
         }
 
-        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
 
        intake.setPower (0.0);
        intake2.setPower (0.0);
 
     }
+//next two functions are power based auto, only use in emergency or lack of encoders
+    public void powerArm(double power,int length){
+
+        armMotor.setPower(power);
+
+        try {Thread.sleep(length);} catch (InterruptedException e) {}
+
+        armMotor.setPower(0.0);
+    }
+
+    public void powerTurn(double powerT, int lengthT){
+        armMover.setPower(powerT);
+
+        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
+
+        armMover.setPower(0.0);
+    }
+
 }
