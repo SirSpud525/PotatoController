@@ -117,7 +117,7 @@ public IMU imu;
         if (absolute <= 0.1) {
             armMover.setPower(0.0);
         } else {
-            armMover.setPower(sign * 0.35);
+            armMover.setPower(sign * 0.5);
         }
     }
 
@@ -208,38 +208,86 @@ public IMU imu;
         drive(0.0);
     }
 
-    public void turn(final int posT) {
-        if (posT == 0) return;
+//    public void turn(final int posT) {
+//        if (posT == 0) return;
+//
+//        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        final int delay = 20;
+//        final int THRESHOLD = 20;
+//        final double ADDITIONAL_SPEED = 0.1;
+//
+//        while (Math.abs(posT - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(posT - frontRight.getCurrentPosition()) > THRESHOLD) {
+//            int flDistance = posT - frontLeft.getCurrentPosition();
+//            int frDistance = posT - frontRight.getCurrentPosition();
+//            int blDistance = posT - backLeft.getCurrentPosition();
+//            int brDistance = posT - backRight.getCurrentPosition();
+//
+//            flDrivePower = (double) flDistance / (double) Math.abs(posT);
+//            blDrivePower = (double) blDistance / (double) Math.abs(posT);
+//            frDrivePower = (double) frDistance / (double) Math.abs(posT);
+//            brDrivePower = (double) brDistance / (double) Math.abs(posT);
+//
+//            frontLeft.setPower(flDrivePower / 3 + ADDITIONAL_SPEED);
+//            frontRight.setPower((frDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+//            backLeft.setPower((blDrivePower / 3 + ADDITIONAL_SPEED) * -1);
+//            backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
+//
+//            try {
+//                Thread.sleep(delay);
+//            } catch (InterruptedException e) {
+//            }
+//        }
+//    }
+
+
+    public void turn(double target) {
+        this.imu.resetYaw();
+
+        if (target == 0) return;
 
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        final int delay = 20;
-        final int THRESHOLD = 20;
-        final double ADDITIONAL_SPEED = 0.1;
+        double currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double error = target - currentPosition;
 
-        while (Math.abs(posT - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(posT - frontRight.getCurrentPosition()) > THRESHOLD) {
-            int flDistance = posT - frontLeft.getCurrentPosition();
-            int frDistance = posT - frontRight.getCurrentPosition();
-            int blDistance = posT - backLeft.getCurrentPosition();
-            int brDistance = posT - backRight.getCurrentPosition();
+        double kp = 0.5;
 
-            flDrivePower = (double) flDistance / (double) Math.abs(posT);
-            blDrivePower = (double) blDistance / (double) Math.abs(posT);
-            frDrivePower = (double) frDistance / (double) Math.abs(posT);
-            brDrivePower = (double) brDistance / (double) Math.abs(posT);
+        final int DELAY = 50;
 
-            frontLeft.setPower(flDrivePower / 3 + ADDITIONAL_SPEED);
-            frontRight.setPower((frDrivePower / 3 + ADDITIONAL_SPEED) * -1);
-            backLeft.setPower((blDrivePower / 3 + ADDITIONAL_SPEED) * -1);
-            backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
+        while (Math.abs(error) > 2) {
+            currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            error = target - currentPosition;
 
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-            }
+            double proportional = error * kp;
+
+            double turn = proportional / (180 * kp);
+
+            flDrivePower = -turn;
+            frDrivePower = turn;
+            blDrivePower = -turn;
+            brDrivePower = turn;
+
+            frontLeft.setPower(flDrivePower / 2);
+            frontRight.setPower(frDrivePower / 2);
+            backLeft.setPower(blDrivePower / 2);
+            backRight.setPower(brDrivePower / 2);
+
+            try {Thread.sleep(DELAY);} catch (InterruptedException e) {}
         }
+
+        drive(0.0);
+
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        try {Thread.sleep(500);} catch (InterruptedException e) {}
     }
+
+
+
 
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
