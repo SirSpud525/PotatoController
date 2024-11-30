@@ -117,7 +117,7 @@ public IMU imu;
         if (absolute <= 0.1) {
             armMover.setPower(0.0);
         } else {
-            armMover.setPower(sign * 0.5);
+            armMover.setPower(sign * 0.6);
         }
     }
 
@@ -295,8 +295,14 @@ public IMU imu;
 
         int flBrPos = pos;
         int frBlPos = -pos;
-        final double extra = 0.1;
-        final double tickDistance = 25;
+        double extra = 0.1;
+        final double tickDistance = 40;
+
+        if (pos > 0){
+            extra = 0.1;
+        } else {
+            extra = -0.1;
+        }
 
         while (Math.abs(flBrPos - backRight.getCurrentPosition()) > tickDistance || Math.abs(flBrPos - frontLeft.getCurrentPosition()) > tickDistance) {
             int flDistance = flBrPos - frontLeft.getCurrentPosition();
@@ -310,8 +316,8 @@ public IMU imu;
             brDrivePower = (double)brDistance / (double)Math.abs(flBrPos);
 
             frontLeft.setPower(flDrivePower / 2 + extra);
-            frontRight.setPower(frDrivePower / 2 - extra);
-            backLeft.setPower(blDrivePower / 2 - extra);
+            frontRight.setPower(frDrivePower / 2 + extra);
+            backLeft.setPower(blDrivePower / 2 + extra);
             backRight.setPower(brDrivePower / 2 + extra);
         }
 
@@ -347,15 +353,15 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
     }
 //MASHED POTATOESSSSSSSS
-public void intakeEnable(double rotate, final int seconds){ //0 corresponds to closing, 1 corresponds to opening
+public void intakeEnable(double rotate, final int seconds){ //0 corresponds to opening, 1 corresponds to closing
         final double rotationType = rotate;
 
         if (rotationType >= 0.1) {
-            intake.setPower(-0.3);
-            intake2.setPower(0.3);
+            intake.setPower(-1);
+            intake2.setPower(1);
         } else {
-            intake.setPower(0.3);
-            intake2.setPower(-0.3);
+            intake.setPower(1);
+            intake2.setPower(-1);
         }
 
         try {Thread.sleep(seconds);} catch (InterruptedException e) {}
@@ -365,7 +371,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to c
 
     }
 //next two functions are power based auto, only use in emergency or lack of encoders
-    public void powerArm(double power,int length){
+    public void powerArm(double power, int length){
 
         armMotor.setPower(power);
 
