@@ -10,15 +10,18 @@ public class AutoLeft1Basket extends LinearOpMode{
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
+        waitForStart();
 
         robot.driveToInches(30, telemetry);
-        robot.turn(-125);
-        robot.driveToInches(10, telemetry);
-        robot.powerTurn(50, 1);
-        robot.powerArm(50, 3);
-        robot.intakeEnable(15, 1);
+        robot.turn(-55);
+        robot.strafe(-360);
+        robot.driveToInches(18, telemetry);
+        robot.powerTurn(-0.6, 1000);
+        robot.powerArm(-0.7, 4800);
+        robot.intakeEnable(0, 3000);
+        robot.powerArm(0.7, 4500);
+        robot.turn(55);
         stop();
     }
-
 
 }
