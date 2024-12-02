@@ -20,7 +20,7 @@ public class PotatoRobot {
     public double frDrivePower;
     public double brDrivePower;
     public double blDrivePower;
-private DcMotor frontLeft;
+    private DcMotor frontLeft;
 private DcMotor frontRight;
 private DcMotor backLeft;
 private DcMotor backRight;
@@ -78,7 +78,9 @@ public IMU imu;
 
     public void Driving(Gamepad gp1){
         double multiplier = Math.max(0.3, 1 - gp1.right_trigger);
+        double speedMode = (gp1.left_trigger);
 
+        double slowdown = 1.5;
         final double drive = (-gp1.left_stick_y);
         final double turn = (gp1.right_stick_x);
         final double strafe = (gp1.left_stick_x);
@@ -88,10 +90,15 @@ public IMU imu;
         blDrivePower = (drive - strafe + turn);
         brDrivePower = (drive + strafe - turn);
 
-        frontLeft.setPower(flDrivePower * multiplier / 1.5);
-        frontRight.setPower(frDrivePower * multiplier / 1.5);
-        backLeft.setPower(blDrivePower * multiplier / 1.5);
-        backRight.setPower(brDrivePower * multiplier / 1.5);
+        if (speedMode > 0.1){
+            slowdown = 1;
+        }
+
+
+        frontLeft.setPower(flDrivePower * multiplier / slowdown);
+        frontRight.setPower(frDrivePower * multiplier / slowdown);
+        backLeft.setPower(blDrivePower * multiplier / slowdown);
+        backRight.setPower(brDrivePower * multiplier / slowdown);
     }
 
 //    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code

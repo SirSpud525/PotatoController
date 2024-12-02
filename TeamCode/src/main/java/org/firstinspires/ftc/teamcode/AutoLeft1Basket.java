@@ -15,9 +15,9 @@ public class AutoLeft1Basket extends LinearOpMode{
         robot.driveToInches(30, telemetry);
         robot.turn(-55);
         robot.strafe(-360);
-        robot.driveToInches(18, telemetry);
+        robot.driveToInches(5, telemetry);
         robot.powerTurn(-0.6, 1000);
-        robot.powerArm(-0.7, 4800);
+        robot.powerArm(-0.7, 4975);
         robot.intakeEnable(0, 3000);
         robot.powerArm(0.7, 4500);
         robot.turn(55);
