@@ -306,7 +306,7 @@ public IMU imu;
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        try {Thread.sleep(500);} catch (InterruptedException e) {}
+        try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
 
 
@@ -346,7 +346,7 @@ public IMU imu;
 
         drive(0.0);
 
-        try {Thread.sleep(500);} catch (InterruptedException e) {}
+        try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
 
     public void armTurn(double turn){
@@ -401,16 +401,16 @@ public void betterTurn(double power, final int seconds){
         final double negPOWER = -1 * power;
         
         frontRight.setPower(posPOWER);
-        backRight.setpower(posPOWER);
-        frontLeft.setpower(negPOWER);
-        backLeft.setpower(negPOWER);
+        backRight.setPower(posPOWER);
+        frontLeft.setPower(negPOWER);
+        backLeft.setPower(negPOWER);
 
       try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
 
         frontRight.setPower(0.0);
-        backRight.setpower(0.0);
-        frontLeft.setpower(0.0);
-        backLeft.setpower(0.0);
+        backRight.setPower(0.0);
+        frontLeft.setPower(0.0);
+        backLeft.setPower(0.0);
         
         
 }
