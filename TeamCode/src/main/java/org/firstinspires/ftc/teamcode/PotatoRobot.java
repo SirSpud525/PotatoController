@@ -405,7 +405,7 @@ public void betterTurn(double power, final int seconds){
         frontLeft.setpower(negPOWER);
         backLeft.setpower(negPOWER);
 
-      try {Thread.sleep(seconds);} catch (InterruptedException e) {}
+      try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
 
         frontRight.setPower(0.0);
         backRight.setpower(0.0);
