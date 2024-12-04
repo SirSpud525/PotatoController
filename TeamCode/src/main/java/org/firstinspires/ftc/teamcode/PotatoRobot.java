@@ -393,6 +393,29 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
        intake2.setPower (0.0);
 
     }
+
+//MASHED POTATOES    
+    
+public void betterTurn(double power, final int seconds){
+        final double posPOWER = power;
+        final double negPOWER = -1 * power;
+        
+        frontRight.setPower(posPOWER);
+        backRight.setpower(posPOWER);
+        frontLeft.setpower(negPOWER);
+        backLeft.setpower(negPOWER);
+
+      try {Thread.sleep(seconds);} catch (InterruptedException e) {}
+
+        frontRight.setPower(0.0);
+        backRight.setpower(0.0);
+        frontLeft.setpower(0.0);
+        backLeft.setpower(0.0);
+        
+        
+}
+ 
+    
 //next two functions are power based auto, only use in emergency or lack of encoders
     public void powerArm(double power, int length){
 
