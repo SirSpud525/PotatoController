@@ -288,10 +288,12 @@ public IMU imu;
 
             double turn = proportional / (180 * kp);
 
-            flDrivePower = -turn;
-            frDrivePower = turn;
-            blDrivePower = -turn;
-            brDrivePower = turn;
+            final int mult = 2;
+
+            flDrivePower = -turn * mult;
+            frDrivePower = turn * mult;
+            blDrivePower = -turn * mult;
+            brDrivePower = turn * mult;
 
             frontLeft.setPower(flDrivePower / 2);
             frontRight.setPower(frDrivePower / 2);
