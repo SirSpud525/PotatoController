@@ -375,7 +375,7 @@ while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
 
 
     }
-//MASHED POTATOESSSSSSSS
+//MASHED POTATOESSSSSSSS   are very tasty
 public void intakeEnable(double rotate, final int seconds){ //0 corresponds to opening, 1 corresponds to closing
         final double rotationType = rotate;
 
@@ -394,7 +394,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 
     }
 
-//MASHED POTATOES    
+//MASHED POTATOES   are very tasty(test)
     
 public void betterTurn(double power, final int seconds){
         final double posPOWER = power;
