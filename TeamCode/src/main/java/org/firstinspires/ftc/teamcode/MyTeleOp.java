@@ -15,6 +15,6 @@ public class MyTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robot.gamePadPower(gamepad1, gamepad2);
+        robot.gamePadPower(gamepad1, gamepad2, telemetry);
     }
 }

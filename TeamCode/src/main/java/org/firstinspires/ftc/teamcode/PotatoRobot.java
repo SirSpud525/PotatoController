@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+
 import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +16,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 public class PotatoRobot {
@@ -74,9 +81,11 @@ public IMU imu;
         );
         imu = hardwareMap.get(BHI260IMU.class, "imu");
         imu.initialize(imuParameters);
+
+        this.imu.resetYaw();
     }
 
-    public void Driving(Gamepad gp1){
+    public void Driving(Gamepad gp1, Telemetry telemetry){
         double multiplier = Math.max(0.3, 1 - gp1.right_trigger);
         double speedMode = (gp1.left_trigger);
 
@@ -90,10 +99,17 @@ public IMU imu;
         blDrivePower = (drive - strafe + turn);
         brDrivePower = (drive + strafe - turn);
 
+        telemetry.addData("IMU-X", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).firstAngle);
+        telemetry.addData("IMU-Y", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).secondAngle);
+        telemetry.addData("IMU-Z", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).thirdAngle);
+
+        double imuPos = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
+        telemetry.addData("IMU-Angle", imuPos);
+        telemetry.update();
+
         if (speedMode > 0.1){
             slowdown = 1;
         }
-
 
         frontLeft.setPower(flDrivePower * multiplier / slowdown);
         frontRight.setPower(frDrivePower * multiplier / slowdown);
@@ -153,8 +169,8 @@ public IMU imu;
 
     }
 
-    public void gamePadPower(Gamepad gp1, Gamepad gp2) {
-        Driving(gp1);
+    public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
+        Driving(gp1, telemetry);
         armMovement(gp2);
         clawClawing(gp2);
     }
@@ -257,7 +273,7 @@ public IMU imu;
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
         double error = target - currentPosition;
 
         double kp = 0.5;
@@ -265,7 +281,7 @@ public IMU imu;
         final int DELAY = 50;
 
         while (Math.abs(error) > 2) {
-            currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
             error = target - currentPosition;
 
             double proportional = error * kp;
