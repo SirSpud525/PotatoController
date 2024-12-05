@@ -11,7 +11,7 @@ public class TestAuto extends LinearOpMode{
         waitForStart();
         //code here
         robot.turn(45);
-        robot.opStrafe(90, 1000); //opStrafe(degrees, seconds);
+        robot.opStrafe(90, 500); //opStrafe(degrees, seconds);
         //code ends
         stop();
     }
