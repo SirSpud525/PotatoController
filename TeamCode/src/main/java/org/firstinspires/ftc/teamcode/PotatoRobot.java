@@ -479,15 +479,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
         double x = cosValue; // assuming radius = 1 (This works especially well bc motors only accept -1.0 to 1.0)
         double y = sinValue;
 
-        enableAllMotors(-1 * x, x); // power based strafe, look at enableAllMotor func for more details (denominator in rise over run)
-
-        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
-
-        enableAllMotors(y, y); // power based foward move (numerator in rise over run)
-
-        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
-
-        enableAllMotors(0.0, 0.0); //sets power to 0, \(0_0)/
+        enableAllMotors(sinValue + cosValue, sinValue - cosValue); // power based strafe, look at enableAllMotor func for more details (denominator in rise over run)
 
     }
 
