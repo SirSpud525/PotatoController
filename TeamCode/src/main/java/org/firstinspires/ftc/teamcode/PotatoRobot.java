@@ -437,3 +437,31 @@ public void betterTurn(double power, final int seconds){
     }
 
 }
+// test strafe func, strafes based on starting pos (or imu var)
+    public void opStrafe(int degrees, final int seconds){
+
+        private void enableAllMotors(final double p1, final double p2){ //abstraction
+            frontRight.setPower(p2);
+            backRight.setPower(p1);
+            frontLeft.setPower(p1);
+            backLeft.setPoweer(p2);
+        }
+
+        final double angleInRadians = Math.toRadians(degrees);
+        final double cosValue = Math.cos(angleInRadians);
+        final double sinValue = Math.sin(angleInRadians);
+
+        double x = cosValue; // assuming radius = 1 (This works especially well bc motors only accept -1.0 to 1.0)
+        double y = sinValue;
+
+        enableAllMotors(-1 * x, x); // power based strafe, look at enableAllMotor func for more details (denominator in rise over run)
+
+        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+
+        enableAllMotors(y, y); // power based foward move (numerator in rise over run)
+
+        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+
+        enableAllMotors(0.0, 0.0); //sets power to 0, \(0_0)/
+
+    }
