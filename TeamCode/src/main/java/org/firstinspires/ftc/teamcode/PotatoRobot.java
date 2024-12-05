@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -117,6 +118,57 @@ public IMU imu;
         backRight.setPower(brDrivePower * multiplier / slowdown);
     }
 
+    public void potatoDrive (Gamepad gp1, Telemetry telemetry){
+        telemetry.addData("IMU-X", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).firstAngle);
+        telemetry.addData("IMU-Y", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).secondAngle);
+        telemetry.addData("IMU-Z", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).thirdAngle);
+
+        double imuPos = (this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES));
+        telemetry.addData("IMU-Angle", imuPos);
+
+        double change = Math.cos(-imuPos);
+        double sine = Math.sin(-imuPos);
+
+        double drive = (-gp1.left_stick_y);
+        double strafe = (gp1.left_stick_x);
+        double turn = (gp1.right_stick_x);
+
+//        double angle = (Math.atan2(drive, strafe));
+//        double magnitude = (Math.sqrt((drive * drive)+(strafe * strafe)));
+
+        telemetry.addData("drive", drive);
+        telemetry.addData("strafe", strafe);
+        telemetry.addData("turn", turn);
+//        telemetry.addData("angle", angle);
+//        telemetry.addData("magnitude", magnitude);
+
+//        flDrivePower = ((-Math.sin(angle + (0.25 * Math.PI)) * magnitude) + turn);
+//        frDrivePower = ((Math.sin(angle - (0.25 * Math.PI)) * magnitude) + turn);
+//        blDrivePower = ((-Math.sin(angle - (0.25 * Math.PI)) * magnitude) + turn);
+//        brDrivePower = ((Math.sin(angle + (0.25 * Math.PI)) * magnitude) + turn);
+
+        double driveD = change * drive;
+        double strafeD = sine * drive;
+        double strafeS = sine * strafe;
+        double driveS = change * strafe;
+
+        flDrivePower = (driveD + driveS + strafeD + strafeS + turn);
+        frDrivePower = (driveD + driveS - strafeD - strafeS - turn);
+        blDrivePower = (driveD + driveS - strafeD - strafeS + turn);
+        brDrivePower = (driveD + driveS + strafeD + strafeS - turn);
+
+        telemetry.addData("fl", flDrivePower);
+        telemetry.addData("fr", frDrivePower);
+        telemetry.addData("bl", blDrivePower);
+        telemetry.addData("br", brDrivePower);
+        telemetry.update();
+
+        frontLeft.setPower(flDrivePower / 4);
+        frontRight.setPower(frDrivePower / 4);
+        backLeft.setPower(blDrivePower / 4);
+        backRight.setPower(brDrivePower / 4);
+
+    }
 //    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code
 //        final boolean yes = (gp1.a);
 //
@@ -170,7 +222,7 @@ public IMU imu;
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
-        Driving(gp1, telemetry);
+        potatoDrive(gp1, telemetry);
         armMovement(gp2);
         clawClawing(gp2);
     }
@@ -264,7 +316,6 @@ public IMU imu;
 //        }
 //    }
 
-
     public void turn(double target) {
         this.imu.resetYaw();
 
@@ -310,9 +361,6 @@ public IMU imu;
 
         try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
-
-
-
 
     public void strafe(int pos) {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -395,28 +443,6 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
        intake2.setPower (0.0);
 
     }
-
-//MASHED POTATOES   are very tasty(test)
-    
-public void betterTurn(double power, final int seconds){
-        final double posPOWER = power;
-        final double negPOWER = -1 * power;
-        
-        frontRight.setPower(posPOWER);
-        backRight.setPower(posPOWER);
-        frontLeft.setPower(negPOWER);
-        backLeft.setPower(negPOWER);
-
-      try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
-
-        frontRight.setPower(0.0);
-        backRight.setPower(0.0);
-        frontLeft.setPower(0.0);
-        backLeft.setPower(0.0);
-        
-        
-}
- 
     
 //next two functions are power based auto, only use in emergency or lack of encoders
     public void powerArm(double power, int length){
@@ -436,16 +462,15 @@ public void betterTurn(double power, final int seconds){
         armMover.setPower(0.0);
     }
 
-}
-// test strafe func, strafes based on starting pos (or imu var)
-    public void opStrafe(int degrees, final int seconds){
+    private void enableAllMotors(final double p1, final double p2){ //abstraction
+        frontRight.setPower(p2);
+        backRight.setPower(p1);
+        frontLeft.setPower(p1);
+        backLeft.setPower(p2);
+    }
 
-        private void enableAllMotors(final double p1, final double p2){ //abstraction
-            frontRight.setPower(p2);
-            backRight.setPower(p1);
-            frontLeft.setPower(p1);
-            backLeft.setPoweer(p2);
-        }
+    //test strafe func, strafes based on starting pos (or imu var)
+    public void opStrafe(int degrees, final int seconds){
 
         final double angleInRadians = Math.toRadians(degrees);
         final double cosValue = Math.cos(angleInRadians);
@@ -456,12 +481,15 @@ public void betterTurn(double power, final int seconds){
 
         enableAllMotors(-1 * x, x); // power based strafe, look at enableAllMotor func for more details (denominator in rise over run)
 
-        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
 
         enableAllMotors(y, y); // power based foward move (numerator in rise over run)
 
-        try {Thread.sleep(seconds * 1000);} catch (InterruptedException e) {}
+        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
 
         enableAllMotors(0.0, 0.0); //sets power to 0, \(0_0)/
 
     }
+
+}
+
