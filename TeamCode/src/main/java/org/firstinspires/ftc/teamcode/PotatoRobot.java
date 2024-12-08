@@ -470,16 +470,29 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
     }
 
     //test strafe func, strafes based on starting pos (or imu var)
-    public void opStrafe(int degrees, final int seconds){
+    public void opStrafe(int degrees, int miliseconds){
 
-        final double angleInRadians = Math.toRadians(degrees);
+        final double Pitch = robotOrientation.getPitch(AngleUnit.DEGREES); //makes sure that it strafes relative to the starting IMU pos
+        final double angleInRadians = Math.toRadians(degrees + 315 - Pitch); //0 deg, would strafe right, 90 deg would strafe up, etc.
         final double cosValue = Math.cos(angleInRadians);
         final double sinValue = Math.sin(angleInRadians);
 
-        double x = cosValue; // assuming radius = 1 (This works especially well bc motors only accept -1.0 to 1.0)
+        double x = cosValue;
         double y = sinValue;
 
-        enableAllMotors(sinValue + cosValue, sinValue - cosValue); // power based strafe, look at enableAllMotor func for more details (denominator in rise over run)
+        if (x > y) { //This just sets it to the max speed
+            y = y / x;
+            x = Math.abs(x) / x; //max
+        } else {
+            x = x / y;
+            y = Math.abs(y) / y; //max
+        }
+
+        enableAllMotors(x, y);
+
+        try {Thread.sleep(miliseconds);} catch (InterruptedException e) {}
+
+        enableAllMotors(0.0, 0.0);
 
     }
 
