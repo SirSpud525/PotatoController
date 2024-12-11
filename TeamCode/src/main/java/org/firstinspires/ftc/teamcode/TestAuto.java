@@ -12,6 +12,7 @@ public class TestAuto extends LinearOpMode{
         //code here
 //        robot.turn(45);
         robot.opStrafe(90, 500);
+        robot.opStrafe(-45, 500);
         //code ends
         stop();
     }

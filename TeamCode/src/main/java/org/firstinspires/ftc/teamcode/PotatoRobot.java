@@ -480,14 +480,6 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
         double x = cosValue;
         double y = sinValue;
 
-        if (x > y) { //This just sets it to the max speed
-            y = y / x;
-            x = Math.abs(x) / x; //max
-        } else {
-            x = x / y;
-            y = Math.abs(y) / y; //max
-        }
-
         enableAllMotors(x, y);
 
         try {Thread.sleep(miliseconds);} catch (InterruptedException e) {}
