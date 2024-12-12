@@ -53,7 +53,7 @@ public IMU imu;
         slide2 = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
-        joint = hardwareMap.get(Servo.class, "joint")
+        joint = hardwareMap.get(Servo.class, "joint");
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -72,8 +72,8 @@ public IMU imu;
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
@@ -182,21 +182,21 @@ public IMU imu;
 //        }
 //    }
 
-    public void armMovement (Gamepad gp2){
-        final double armPower = (gp2.right_stick_y);
-        final double armTurn = (gp2.left_stick_y);
-
-        armMotor.setPower(armPower);
-
-        double absolute = Math.abs(armTurn);
-        double sign = armTurn / absolute;
-
-        if (absolute <= 0.1) {
-            armMover.setPower(0.0);
-        } else {
-            armMover.setPower(sign * 0.6);
-        }
-    }
+//    public void armMovement (Gamepad gp2){
+//        final double armPower = (gp2.right_stick_y);
+//        final double armTurn = (gp2.left_stick_y);
+//
+//        armMotor.setPower(armPower);
+//
+//        double absolute = Math.abs(armTurn);
+//        double sign = armTurn / absolute;
+//
+//        if (absolute <= 0.1) {
+//            armMover.setPower(0.0);
+//        } else {
+//            armMover.setPower(sign * 0.6);
+//        }
+//    }
 
     public void jointOn(Gamepad gp2) {
         if (gp2.left_bumper == true) {
@@ -251,8 +251,9 @@ public IMU imu;
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
         Driving(gp1, telemetry);
-        armMovement(gp2);
+        slideMovement(gp2);
         clawClawing(gp2);
+        jointOn(gp2);
     }
 
     private void drive(final double pow){
@@ -427,33 +428,32 @@ public IMU imu;
         try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
 
-    public void armTurn(double turn){
+//    public void armTurn(double turn){
+//
+//        final double tickDist = 15;
+//        final double extraArm = 0.5;
+//
+//while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
+//    double distance = turn - armMover.getCurrentPosition();
+//    double armMoverPower = distance/Math.abs(turn);
+//    armMover.setPower(armMoverPower / 1.75 + extraArm);
+//}
+//
+//    }
+//
+//    public void armExtend(double extend){
+//
+//        final double tickErr = 15;
+//        final double extraExtend = 0.5;
+//
+//        while (Math.abs(extend - armMover.getCurrentPosition()) > tickErr){
+//            double distance = extend - armMover.getCurrentPosition();
+//            double armMoverPower = distance/Math.abs(extend);
+//            armMover.setPower(armMoverPower / 1.75 + extraExtend);
+//        }
+//
+//    }
 
-        final double tickDist = 15;
-        final double extraArm = 0.5;
-
-while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
-    double distance = turn - armMover.getCurrentPosition();
-    double armMoverPower = distance/Math.abs(turn);
-    armMover.setPower(armMoverPower / 1.75 + extraArm);
-}
-
-    }
-
-    public void armExtend(double extend){
-
-        final double tickErr = 15;
-        final double extraExtend = 0.5;
-
-        while (Math.abs(extend - armMover.getCurrentPosition()) > tickErr){
-            double distance = extend - armMover.getCurrentPosition();
-            double armMoverPower = distance/Math.abs(extend);
-            armMover.setPower(armMoverPower / 1.75 + extraExtend);
-        }
-
-
-    }
-//MASHED POTATOESSSSSSSS   are very tasty
 public void intakeEnable(double rotate, final int seconds){ //0 corresponds to opening, 1 corresponds to closing
         final double rotationType = rotate;
 
@@ -473,22 +473,22 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
     }
     
 //next two functions are power based auto, only use in emergency or lack of encoders
-    public void powerArm(double power, int length){
-
-        armMotor.setPower(power);
-
-        try {Thread.sleep(length);} catch (InterruptedException e) {}
-
-        armMotor.setPower(0.0);
-    }
-
-    public void powerTurn(double powerT, int lengthT){
-        armMover.setPower(powerT);
-
-        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
-
-        armMover.setPower(0.0);
-    }
+//    public void powerArm(double power, int length){
+//
+//        armMotor.setPower(power);
+//
+//        try {Thread.sleep(length);} catch (InterruptedException e) {}
+//
+//        armMotor.setPower(0.0);
+//    }
+//
+//    public void powerTurn(double powerT, int lengthT){
+//        armMover.setPower(powerT);
+//
+//        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
+//
+//        armMover.setPower(0.0);
+//    }
 
     private void enableAllMotors(final double p1, final double p2){ //abstraction
         frontRight.setPower(p2);
@@ -500,7 +500,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
     //test strafe func, strafes based on starting pos (or imu var)
     public void opStrafe(int degrees, int miliseconds){
 
-        final double Pitch = robotOrientation.getPitch(AngleUnit.DEGREES); //makes sure that it strafes relative to the starting IMU pos
+        final double Pitch = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES); //makes sure that it strafes relative to the starting IMU pos
         final double angleInRadians = Math.toRadians(degrees + 315 - Pitch); //0 deg, would strafe right, 90 deg would strafe up, etc.
         final double cosValue = Math.cos(angleInRadians);
         final double sinValue = Math.sin(angleInRadians);
