@@ -32,8 +32,8 @@ public class PotatoRobot {
 private DcMotor frontRight;
 private DcMotor backLeft;
 private DcMotor backRight;
-private DcMotor armMotor;
-private DcMotor armMover;
+private DcMotor slide1;
+private DcMotor slide2;
 private CRServo intake;
 private CRServo intake2;
 public IMU imu;
@@ -48,8 +48,8 @@ public IMU imu;
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        armMover = hardwareMap.get(DcMotor.class, "armMover");
+        slide1 = hardwareMap.get(DcMotor.class, "armMotor");
+        slide2 = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
 
@@ -221,8 +221,27 @@ public IMU imu;
 
     }
 
+    public void slideMovement(Gamepad gp2)
+    {
+
+    double slidePower = (gp2.left_stick_y); // Gets the left stick y position of controller
+    double slideAbs = Math.abs(slidePower);
+    double slideSign = (slidePower/slideAbs);
+    //decides how much power to give slides
+    if(slideAbs >= 0.1) // moves Linear Slide twins move up or down
+    {
+        slide1.setPower(slideSign * 0.6);
+        slide1.setPower(slideSign * 0.6);
+    }
+    else // makes nothing happen
+    {
+        slide1.setPower(0.0);
+        slide2.setPower(0.0);
+    }
+    }
+
     public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
-        potatoDrive(gp1, telemetry);
+        Driving(gp1, telemetry);
         armMovement(gp2);
         clawClawing(gp2);
     }
