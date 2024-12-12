@@ -36,6 +36,7 @@ private DcMotor slide1;
 private DcMotor slide2;
 private CRServo intake;
 private CRServo intake2;
+private Servo joint;
 public IMU imu;
 
     //potato
@@ -52,6 +53,7 @@ public IMU imu;
         slide2 = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
+        joint = hardwareMap.get(Servo.class, "joint")
 
         // Set up drive motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -194,6 +196,13 @@ public IMU imu;
         } else {
             armMover.setPower(sign * 0.6);
         }
+    }
+
+    public void jointOn(Gamepad gp2) {
+        if (gp2.left_bumper == true) {
+            joint.setPosition(0.0);
+        } else if (gp2.right_bumper == true)
+            joint.setPosition(1.0);
     }
 
     public void clawClawing(Gamepad gp2){
@@ -498,14 +507,6 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 
         double x = cosValue;
         double y = sinValue;
-
-        if (x > y) { //This just sets it to the max speed
-            y = y / x;
-            x = Math.abs(x) / x; //max
-        } else {
-            x = x / y;
-            y = Math.abs(y) / y; //max
-        }
 
         enableAllMotors(x, y);
 
