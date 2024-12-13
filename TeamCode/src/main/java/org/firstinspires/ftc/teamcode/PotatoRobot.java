@@ -125,6 +125,10 @@ public IMU imu;
         telemetry.addData("IMU-Y", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).secondAngle);
         telemetry.addData("IMU-Z", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).thirdAngle);
 
+        if (gp1.x == true){
+            imu.resetYaw();
+        }
+
         double imuPos = (imu.getRobotYawPitchRollAngles().getYaw(RADIANS));
         telemetry.addData("IMU-Angle", imuPos);
 
@@ -135,14 +139,9 @@ public IMU imu;
         double strafe = (gp1.left_stick_x);
         double turn = (gp1.right_stick_x);
 
-//        double angle = (Math.atan2(drive, strafe));
-//        double magnitude = (Math.sqrt((drive * drive)+(strafe * strafe)));
-
         telemetry.addData("drive", drive);
         telemetry.addData("strafe", strafe);
         telemetry.addData("turn", turn);
-//        telemetry.addData("angle", angle);
-//        telemetry.addData("magnitude", magnitude);
 
 //        flDrivePower = ((-Math.sin(angle + (0.25 * Math.PI)) * magnitude) + turn);
 //        frDrivePower = ((Math.sin(angle - (0.25 * Math.PI)) * magnitude) + turn);
@@ -157,11 +156,6 @@ public IMU imu;
         double actualDrive = (driveCos + strafeSin) / 1.5;
         double actualStrafe = -driveSin + strafeCos;
 
-//        flDrivePower = (driveD + driveS + strafeD + strafeS + turn);
-//        frDrivePower = (driveD + driveS - strafeD - strafeS - turn);
-//        blDrivePower = (driveD + driveS - strafeD - strafeS + turn);
-//        brDrivePower = (driveD + driveS + strafeD + strafeS - turn);
-
         flDrivePower = (actualDrive + actualStrafe + turn);
         frDrivePower = (actualDrive - actualStrafe - turn);
         blDrivePower = (actualDrive - actualStrafe + turn);
@@ -173,10 +167,18 @@ public IMU imu;
         telemetry.addData("br", brDrivePower);
         telemetry.update();
 
-        frontLeft.setPower(flDrivePower / 1.5);
-        frontRight.setPower(frDrivePower / 1.5);
-        backLeft.setPower(blDrivePower / 1.5);
-        backRight.setPower(brDrivePower / 1.5);
+        double slowdown = 1.5;
+
+        if (gp1.right_trigger >= 0.1){
+            slowdown = 3;
+        } else if (gp1.left_trigger >= 0.1) {
+            slowdown = 1;
+        }
+
+        frontLeft.setPower(flDrivePower / slowdown);
+        frontRight.setPower(frDrivePower / slowdown);
+        backLeft.setPower(blDrivePower / slowdown);
+        backRight.setPower(brDrivePower / slowdown);
 
     }
 //    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code
