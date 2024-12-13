@@ -78,8 +78,8 @@ public IMU imu;
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
                 )
         );
         imu = hardwareMap.get(BHI260IMU.class, "imu");
@@ -125,7 +125,7 @@ public IMU imu;
         telemetry.addData("IMU-Y", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).secondAngle);
         telemetry.addData("IMU-Z", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).thirdAngle);
 
-        double imuPos = (this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES));
+        double imuPos = (imu.getRobotYawPitchRollAngles().getYaw(RADIANS));
         telemetry.addData("IMU-Angle", imuPos);
 
         double change = Math.cos(-imuPos);
@@ -149,15 +149,23 @@ public IMU imu;
 //        blDrivePower = ((-Math.sin(angle - (0.25 * Math.PI)) * magnitude) + turn);
 //        brDrivePower = ((Math.sin(angle + (0.25 * Math.PI)) * magnitude) + turn);
 
-        double driveD = change * drive;
-        double strafeD = sine * drive;
-        double strafeS = sine * strafe;
-        double driveS = change * strafe;
+        double driveCos = change * drive;
+        double driveSin = sine * drive;
+        double strafeSin = sine * strafe;
+        double strafeCos = change * strafe;
 
-        flDrivePower = (driveD + driveS + strafeD + strafeS + turn);
-        frDrivePower = (driveD + driveS - strafeD - strafeS - turn);
-        blDrivePower = (driveD + driveS - strafeD - strafeS + turn);
-        brDrivePower = (driveD + driveS + strafeD + strafeS - turn);
+        double actualDrive = (driveCos + strafeSin) / 1.5;
+        double actualStrafe = -driveSin + strafeCos;
+
+//        flDrivePower = (driveD + driveS + strafeD + strafeS + turn);
+//        frDrivePower = (driveD + driveS - strafeD - strafeS - turn);
+//        blDrivePower = (driveD + driveS - strafeD - strafeS + turn);
+//        brDrivePower = (driveD + driveS + strafeD + strafeS - turn);
+
+        flDrivePower = (actualDrive + actualStrafe + turn);
+        frDrivePower = (actualDrive - actualStrafe - turn);
+        blDrivePower = (actualDrive - actualStrafe + turn);
+        brDrivePower = (actualDrive + actualStrafe - turn);
 
         telemetry.addData("fl", flDrivePower);
         telemetry.addData("fr", frDrivePower);
@@ -165,10 +173,10 @@ public IMU imu;
         telemetry.addData("br", brDrivePower);
         telemetry.update();
 
-        frontLeft.setPower(flDrivePower / 4);
-        frontRight.setPower(frDrivePower / 4);
-        backLeft.setPower(blDrivePower / 4);
-        backRight.setPower(brDrivePower / 4);
+        frontLeft.setPower(flDrivePower / 1.5);
+        frontRight.setPower(frDrivePower / 1.5);
+        backLeft.setPower(blDrivePower / 1.5);
+        backRight.setPower(brDrivePower / 1.5);
 
     }
 //    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code
@@ -250,10 +258,10 @@ public IMU imu;
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
-        Driving(gp1, telemetry);
-        slideMovement(gp2);
-        clawClawing(gp2);
-        jointOn(gp2);
+        potatoDrive(gp1, telemetry);
+//        slideMovement(gp2);
+//        clawClawing(gp2);
+//        jointOn(gp2);
     }
 
     private void drive(final double pow){
