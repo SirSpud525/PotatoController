@@ -167,18 +167,18 @@ public IMU imu;
         telemetry.addData("br", brDrivePower);
         telemetry.update();
 
-        double slowdown = 1.5;
+        double slowdown = 0.85;
 
         if (gp1.right_trigger >= 0.1){
-            slowdown = 3;
+            slowdown = 0.25;
         } else if (gp1.left_trigger >= 0.1) {
-            slowdown = 1;
+            slowdown = 1.25;
         }
 
-        frontLeft.setPower(flDrivePower / slowdown);
-        frontRight.setPower(frDrivePower / slowdown);
-        backLeft.setPower(blDrivePower / slowdown);
-        backRight.setPower(brDrivePower / slowdown);
+        frontLeft.setPower(flDrivePower * slowdown);
+        frontRight.setPower(frDrivePower * slowdown);
+        backLeft.setPower(blDrivePower * slowdown);
+        backRight.setPower(brDrivePower * slowdown);
 
     }
 //    public void potatoesAreBad(Gamepad gp1){ //Antonio y pranavs code
@@ -260,7 +260,11 @@ public IMU imu;
     }
 
     public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
-        potatoDrive(gp1, telemetry);
+        if (gp1.y == true){
+            Driving(gp1, telemetry);
+        } else {
+            potatoDrive(gp1, telemetry);
+        }
 //        slideMovement(gp2);
 //        clawClawing(gp2);
 //        jointOn(gp2);
