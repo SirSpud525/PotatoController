@@ -217,7 +217,15 @@ public IMU imu;
         } else if (gp2.right_bumper == true)
             joint.setPosition(1.0);
     }
-
+// raises the arm!!!
+    public void raiseArm(Gamepad gp2){
+         double rightStick_y = 0.5999 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
+        if(Math.abs(gp2.right_stick_y) > 0.1){
+            armMotor.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
+        } else {
+            armMotor.setPower(0); // makes the arm do nothing!
+        }
+    }
     public void clawClawing(Gamepad gp2){
 
         final double intakeOn = (gp2.right_trigger);
