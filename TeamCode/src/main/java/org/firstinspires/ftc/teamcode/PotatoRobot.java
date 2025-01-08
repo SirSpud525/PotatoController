@@ -34,6 +34,7 @@ private DcMotor backLeft;
 private DcMotor backRight;
 private DcMotor slide1;
 private DcMotor slide2;
+private DcMotor arm;
 private CRServo intake;
 private CRServo intake2;
 private Servo joint;
@@ -54,11 +55,12 @@ public IMU imu;
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
         joint = hardwareMap.get(Servo.class, "joint");
+        arm = hardwareMap.get(DcMotor.class, "arm");
 
-        // Set up drive motors
+        // Set reverse motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-
+        slide2.setDirection(DcMotor.Direction.REVERSE);
         //encoders
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -74,6 +76,7 @@ public IMU imu;
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
@@ -250,7 +253,7 @@ public IMU imu;
     if(slideAbs >= 0.1) // moves Linear Slide twins move up or down
     {
         slide1.setPower(slideSign * 0.6);
-        slide1.setPower(slideSign * 0.6);
+        slide2.setPower(slideSign * 0.6);
     }
     else // makes nothing happen
     {
@@ -265,9 +268,9 @@ public IMU imu;
         } else {
             potatoDrive(gp1, telemetry);
         }
-//        slideMovement(gp2);
-//        clawClawing(gp2);
-//        jointOn(gp2);
+        slideMovement(gp2);
+        clawClawing(gp2);
+        jointOn(gp2);
     }
 
     private void drive(final double pow){
@@ -441,32 +444,6 @@ public IMU imu;
 
         try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
-
-//    public void armTurn(double turn){
-//
-//        final double tickDist = 15;
-//        final double extraArm = 0.5;
-//
-//while (Math.abs(turn - armMover.getCurrentPosition()) > tickDist){
-//    double distance = turn - armMover.getCurrentPosition();
-//    double armMoverPower = distance/Math.abs(turn);
-//    armMover.setPower(armMoverPower / 1.75 + extraArm);
-//}
-//
-//    }
-//
-//    public void armExtend(double extend){
-//
-//        final double tickErr = 15;
-//        final double extraExtend = 0.5;
-//
-//        while (Math.abs(extend - armMover.getCurrentPosition()) > tickErr){
-//            double distance = extend - armMover.getCurrentPosition();
-//            double armMoverPower = distance/Math.abs(extend);
-//            armMover.setPower(armMoverPower / 1.75 + extraExtend);
-//        }
-//
-//    }
 
 public void intakeEnable(double rotate, final int seconds){ //0 corresponds to opening, 1 corresponds to closing
         final double rotationType = rotate;
