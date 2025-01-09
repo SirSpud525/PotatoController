@@ -60,7 +60,7 @@ public IMU imu;
         // Set reverse motors
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-        slide2.setDirection(DcMotor.Direction.REVERSE);
+        slide1.setDirection(DcMotor.Direction.REVERSE);
         //encoders
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -221,11 +221,12 @@ public IMU imu;
     public void raiseArm(Gamepad gp2){
          double rightStick_y = 0.5999 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
         if(Math.abs(gp2.right_stick_y) > 0.1){
-            armMotor.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
+            arm.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
         } else {
-            armMotor.setPower(0); // makes the arm do nothing!
+            arm.setPower(0); // makes the arm do nothing!
         }
     }
+
     public void clawClawing(Gamepad gp2){
 
         final double intakeOn = (gp2.right_trigger);
@@ -257,16 +258,21 @@ public IMU imu;
     double slidePower = (gp2.left_stick_y); // Gets the left stick y position of controller
     double slideAbs = Math.abs(slidePower);
     double slideSign = (slidePower/slideAbs);
+    double pwr = -0.1;
     //decides how much power to give slides
-    if(slideAbs >= 0.1) // moves Linear Slide twins move up or down
-    {
-        slide1.setPower(slideSign * 0.6);
-        slide2.setPower(slideSign * 0.6);
-    }
-    else // makes nothing happen
-    {
+    if (gp2.y == true){
         slide1.setPower(0.0);
         slide2.setPower(0.0);
+    }else {
+        if (slideAbs >= 0.1) // moves Linear Slide twins move up or down
+        {
+            slide1.setPower(slideSign * 0.6);
+            slide2.setPower(slideSign * 0.6);
+        } else // pwr is passive power to keep the slides where they need to be
+        {
+            slide1.setPower(pwr);
+            slide2.setPower(pwr);
+        }
     }
     }
 
@@ -279,6 +285,7 @@ public IMU imu;
         slideMovement(gp2);
         clawClawing(gp2);
         jointOn(gp2);
+        raiseArm(gp2);
     }
 
     private void drive(final double pow){
@@ -335,6 +342,26 @@ public IMU imu;
         }
 
         drive(0.0);
+    }
+
+    public void raiseSlides (double amt){
+        slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double distance = 20;
+        double additional = 0.15;
+
+        while (Math.abs(amt - slide1.getCurrentPosition()) > distance){
+            double toGo = amt - slide1.getCurrentPosition();
+
+            double slidePow = toGo/Math.abs(amt);
+
+            slide1.setPower(slidePow / 2 + additional);
+        }
+
     }
 
 //    public void turn(final int posT) {
