@@ -37,7 +37,7 @@ private DcMotor slide2;
 private DcMotor arm;
 private CRServo intake;
 private CRServo intake2;
-private Servo joint;
+private CRServo joint;
 public IMU imu;
 
     //potato
@@ -54,7 +54,7 @@ public IMU imu;
         slide2 = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
-        joint = hardwareMap.get(Servo.class, "joint");
+        joint = hardwareMap.get(CRServo.class, "joint");
         arm = hardwareMap.get(DcMotor.class, "arm");
 
         // Set reverse motors
@@ -212,10 +212,15 @@ public IMU imu;
 //    }
 
     public void jointOn(Gamepad gp2) {
-        if (gp2.left_bumper == true) {
-            joint.setPosition(0.0);
-        } else if (gp2.right_bumper == true)
-            joint.setPosition(1.0);
+        if (gp2.left_bumper || gp2.right_bumper) {
+            if (gp2.left_bumper){
+                joint.setPower(-0.6);
+            } else {
+                joint.setPower(0.6);
+            }
+        } else {
+            joint.setPower(0.0);
+        }
     }
 // raises the arm!!!
     public void raiseArm(Gamepad gp2){
@@ -313,8 +318,14 @@ public IMU imu;
         setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         final int delay = 20;
-        final int THRESHOLD = 20;
-        final double ADDITIONAL_SPEED = 0.1;
+        final int THRESHOLD = 35;
+        double ADDITIONAL_SPEED;
+
+        if (pos >= 0){
+            ADDITIONAL_SPEED = 0.1;
+        }else {
+            ADDITIONAL_SPEED = -0.1;
+        }
 
         while (Math.abs(pos - frontLeft.getCurrentPosition()) > THRESHOLD || Math.abs(pos - frontRight.getCurrentPosition()) > THRESHOLD) {
             int flDistance = pos - frontLeft.getCurrentPosition();
@@ -335,6 +346,8 @@ public IMU imu;
             backLeft.setPower(blDrivePower / 3 + ADDITIONAL_SPEED);
             backRight.setPower(brDrivePower / 3 + ADDITIONAL_SPEED);
 
+//            slide1.setPower(-0.1);
+//            slide2.setPower(-0.1);
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
@@ -351,16 +364,20 @@ public IMU imu;
         slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double distance = 20;
-        double additional = 0.15;
+        double distance = 100;
+        double additional = 0.1;
 
         while (Math.abs(amt - slide1.getCurrentPosition()) > distance){
             double toGo = amt - slide1.getCurrentPosition();
 
             double slidePow = toGo/Math.abs(amt);
 
-            slide1.setPower(slidePow / 2 + additional);
+            slide1.setPower((slidePow / 2) + additional);
+            slide2.setPower((slidePow / 2) + additional);
         }
+
+        slide1.setPower(-0.0031415926535897932384626);
+        slide2.setPower(-0.0031415926535897932384626);
 
     }
 
@@ -420,7 +437,7 @@ public IMU imu;
 
             double turn = proportional / (180 * kp);
 
-            final int mult = 2;
+            final double mult = 2.4;
 
             flDrivePower = -turn * mult;
             frDrivePower = turn * mult;
@@ -470,9 +487,12 @@ public IMU imu;
             brDrivePower = (double)brDistance / (double)Math.abs(flBrPos);
 
             frontLeft.setPower(flDrivePower / 2 + extra);
-            frontRight.setPower(frDrivePower / 2 + extra);
-            backLeft.setPower(blDrivePower / 2 + extra);
+            frontRight.setPower(frDrivePower / 2 - extra);
+            backLeft.setPower(blDrivePower / 2 - extra);
             backRight.setPower(brDrivePower / 2 + extra);
+
+//            slide1.setPower(-0.1);
+//            slide2.setPower(-0.1);
         }
 
         drive(0.0);

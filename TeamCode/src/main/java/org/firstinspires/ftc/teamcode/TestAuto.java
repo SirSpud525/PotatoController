@@ -10,8 +10,10 @@ public class TestAuto extends LinearOpMode{
         robot.init(hardwareMap);
         waitForStart();
         //code here
-
-        robot.raiseSlides(100);
+        robot.driveTo(12, telemetry);
+        robot.turn(90);
+        robot.raiseSlides(-300);
+        robot.driveToInches(1000, telemetry);
 
         //code ends
         stop();
