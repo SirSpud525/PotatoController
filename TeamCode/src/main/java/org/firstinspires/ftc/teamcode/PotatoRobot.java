@@ -543,22 +543,37 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
     }
 
     //test strafe func, strafes based on starting pos (or imu var)
-    public void opStrafe(int degrees, int miliseconds){
+    public void angularStrafe(int degrees, int distance) {
 
-        final double Pitch = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES); //makes sure that it strafes relative to the starting IMU pos
-        final double angleInRadians = Math.toRadians(degrees + 315 - Pitch); //0 deg, would strafe right, 90 deg would strafe up, etc.
-        final double cosValue = Math.cos(angleInRadians);
-        final double sinValue = Math.sin(angleInRadians);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double x = cosValue;
-        double y = sinValue;
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double xDist = 1000;
+        double yDist = 1000;
+        final double error = 35;
 
-        enableAllMotors(x, y);
+        while (Math.abs(yDist - frontRight.getCurrentPosition()) > error || Math.abs(xDist - frontRight.getCurrentPosition())) {
 
-        try {Thread.sleep(miliseconds);} catch (InterruptedException e) {}
+            double Pitch = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES); //makes sure that it strafes relative to the starting IMU pos
+            double angleInRadians = Math.toRadians(degrees + 315 - Pitch); //0 deg, would strafe right, 90 deg would strafe up, etc.
+            double cosValue = Math.cos(angleInRadians);
+            double sinValue = Math.sin(angleInRadians);
+            double yDist = distance * sinValue;
+            double xDist = distance * cosValue;
 
-        enableAllMotors(0.0, 0.0);
+            double x = cosValue;
+            double y = sinValue;
 
+            enableAllMotors(x, y);
+        }
+
+        enableAllMotors(0.0,0.0);
     }
 
 }
