@@ -37,7 +37,7 @@ private DcMotor slide2;
 private DcMotor arm;
 private CRServo intake;
 private CRServo intake2;
-private CRServo joint;
+private Servo joint;
 public IMU imu;
 
     //potato
@@ -54,7 +54,7 @@ public IMU imu;
         slide2 = hardwareMap.get(DcMotor.class, "armMover");
         intake = hardwareMap.get(CRServo.class, "claw");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
-        joint = hardwareMap.get(CRServo.class, "joint");
+        joint = hardwareMap.get(Servo.class, "joint");
         arm = hardwareMap.get(DcMotor.class, "arm");
 
         // Set reverse motors
@@ -214,14 +214,13 @@ public IMU imu;
     public void jointOn(Gamepad gp2) {
         if (gp2.left_bumper || gp2.right_bumper) {
             if (gp2.left_bumper){
-                joint.setPower(-0.6);
+                joint.setPosition(-1.0);
             } else {
-                joint.setPower(0.6);
+                joint.setPosition(1.0);
             }
-        } else {
-            joint.setPower(0.0);
         }
     }
+
 // raises the arm!!!
     public void raiseArm(Gamepad gp2){
          double rightStick_y = 0.5999 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
