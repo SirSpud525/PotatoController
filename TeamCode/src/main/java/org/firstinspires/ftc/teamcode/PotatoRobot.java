@@ -124,6 +124,7 @@ public IMU imu;
     }
 
     public void potatoDrive (Gamepad gp1, Telemetry telemetry){
+        //gyro driving function
         telemetry.addData("IMU-X", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).firstAngle);
         telemetry.addData("IMU-Y", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).secondAngle);
         telemetry.addData("IMU-Z", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, DEGREES).thirdAngle);
@@ -280,8 +281,8 @@ public IMU imu;
     }
     }
 
-    public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry) {
-        if (gp1.y == true){
+    public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry, boolean toggle) {
+        if (toggle == true){
             Driving(gp1, telemetry);
         } else {
             potatoDrive(gp1, telemetry);
@@ -552,28 +553,29 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double xDist = 1000;
         double yDist = 1000;
         final double error = 35;
+        final double slowdown = 1.5;
 
-        while (Math.abs(yDist - frontRight.getCurrentPosition()) > error || Math.abs(xDist - frontRight.getCurrentPosition())) {
+        while (Math.abs(yDist - frontRight.getCurrentPosition()) > error || Math.abs(xDist - frontLeft.getCurrentPosition()) > error) {
 
             double Pitch = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES); //makes sure that it strafes relative to the starting IMU pos
             double angleInRadians = Math.toRadians(degrees + 315 - Pitch); //0 deg, would strafe right, 90 deg would strafe up, etc.
             double cosValue = Math.cos(angleInRadians);
             double sinValue = Math.sin(angleInRadians);
-            double yDist = distance * sinValue;
-            double xDist = distance * cosValue;
+            yDist = distance * sinValue;
+            xDist = distance * cosValue;
 
             double x = cosValue;
             double y = sinValue;
 
-            enableAllMotors(x, y);
+            enableAllMotors(x / slowdown, y / slowdown);
         }
 
-        enableAllMotors(0.0,0.0);
+        drive(0.0);
     }
 
 }

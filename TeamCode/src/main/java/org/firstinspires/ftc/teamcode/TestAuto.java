@@ -10,13 +10,18 @@ public class TestAuto extends LinearOpMode{
         robot.init(hardwareMap);
         waitForStart();
         //code here
-        robot.driveTo(12, telemetry);
-        robot.turn(90);
-        robot.raiseSlides(-300);
-        robot.driveToInches(1000, telemetry);
+
+
 
         //code ends
         stop();
     }
 
 }
+
+//donut
+//
+//   for (int i = 0; i < 360; i++ ){
+//        robot.angularStrafe(45, 50);
+//        robot.turn(-1);
+//        }

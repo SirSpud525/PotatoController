@@ -13,15 +13,15 @@ public class AutoRightGood extends LinearOpMode{
         robot.init(hardwareMap);
         waitForStart();
         //code start
-        robot.driveToInches(8,telemetry);
-        robot.strafe(-1700);
-        robot.driveToInches(39, telemetry);
+
+        robot.angularStrafe(55, 2400);
         robot.raiseSlides(-500);
         robot.raiseSlides(300);
         robot.strafe(-1900);
         robot.driveToInches(96, telemetry);
         robot.turn(-90);
-        //code end
+
+//        //code end
         stop();
     }
 
