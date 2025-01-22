@@ -224,11 +224,11 @@ public IMU imu;
 
 // raises the arm!!!
     public void raiseArm(Gamepad gp2){
-         double rightStick_y = 0.5999 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
+         double rightStick_y = 0.45 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
         if(Math.abs(gp2.right_stick_y) > 0.1){
             arm.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
         } else {
-            arm.setPower(0); // makes the arm do nothing!
+            arm.setPower(0.0); // makes the arm do nothing!
         }
     }
 
@@ -378,6 +378,23 @@ public IMU imu;
 
         slide1.setPower(-0.0031415926535897932384626);
         slide2.setPower(-0.0031415926535897932384626);
+
+    }
+
+    public void armMove (double amt){
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double distance = 100;
+        double additional = 0.1;
+
+        while (Math.abs(amt - arm.getCurrentPosition()) > distance){
+            double toGo = amt - arm.getCurrentPosition();
+
+            double slidePow = toGo/Math.abs(amt);
+
+            arm.setPower((slidePow / 2) + additional);
+        }
 
     }
 
