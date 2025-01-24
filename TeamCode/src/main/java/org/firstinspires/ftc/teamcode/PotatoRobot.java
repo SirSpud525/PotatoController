@@ -619,8 +619,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        double xDist = 1000;
-        double yDist = 1000;
+
         final double error = 35;
         final double slowdown = 1.5;
 
@@ -639,7 +638,6 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
             enableAllMotors(x / slowdown, y / slowdown);
         }
 
-        drive(0.0);
     }
 
 }
