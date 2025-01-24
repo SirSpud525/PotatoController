@@ -64,6 +64,12 @@ public IMU imu;
         //encoders
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft.setTargetPosition(0);
         backLeft.setTargetPosition(0);
         backRight.setTargetPosition(0);
@@ -77,6 +83,8 @@ public IMU imu;
         slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        joint.setPosition(0.7);
 
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
@@ -215,20 +223,42 @@ public IMU imu;
     public void jointOn(Gamepad gp2) {
         if (gp2.left_bumper || gp2.right_bumper) {
             if (gp2.left_bumper){
-                joint.setPosition(-1.0);
-            } else {
                 joint.setPosition(1.0);
+            } else {
+                joint.setPosition(0.0);
             }
         }
     }
 
 // raises the arm!!!
     public void raiseArm(Gamepad gp2){
-         double rightStick_y = 0.45 *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
+
+        double armPwr = 0.55;
+
+        if (gp2.x){
+            armPwr = 0.65;
+        }
+
+         double rightStick_y = armPwr *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
         if(Math.abs(gp2.right_stick_y) > 0.1){
             arm.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
+        } else if (gp2.dpad_down){
+            arm.setPower(-0.2);
+        } else if (gp2.dpad_up){
+          arm.setPower(0.2);
         } else {
-            arm.setPower(0.0); // makes the arm do nothing!
+
+            // with encoders
+//            if (arm.getCurrentPosition() > 250){
+//                arm.setPower(-0.2);
+//            } else {
+//                arm.setPower(0.12);
+//            }
+//        }
+
+
+            //without encoders
+            arm.setPower(0.0);
         }
     }
 
@@ -291,6 +321,7 @@ public IMU imu;
         clawClawing(gp2);
         jointOn(gp2);
         raiseArm(gp2);
+        telemetry.addData("armPos", arm.getCurrentPosition());
     }
 
     private void drive(final double pow){
@@ -364,8 +395,12 @@ public IMU imu;
         slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        double additional = -0.1;
         double distance = 100;
-        double additional = 0.1;
+
+        if (amt >= 0){
+            additional = 0.1;
+        }
 
         while (Math.abs(amt - slide1.getCurrentPosition()) > distance){
             double toGo = amt - slide1.getCurrentPosition();
@@ -396,6 +431,14 @@ public IMU imu;
             arm.setPower((slidePow / 2) + additional);
         }
 
+    }
+
+    public void jointSet(double AMOUNT){
+
+        joint.setPosition(AMOUNT);
+try{
+        Thread.sleep(10000);} catch (InterruptedException e) {
+        }
     }
 
 //    public void turn(final int posT) {
@@ -545,13 +588,17 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 //        armMotor.setPower(0.0);
 //    }
 //
-//    public void powerTurn(double powerT, int lengthT){
-//        armMover.setPower(powerT);
-//
-//        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
-//
-//        armMover.setPower(0.0);
-//    }
+    public void powerTurn(double powerT, int lengthT){
+        arm.setPower(powerT);
+
+        try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
+
+        if (powerT >= 0) {
+            arm.setPower(-0.2);
+        } else {
+            arm.setPower(0.2);
+        }
+    }
 
     private void enableAllMotors(final double p1, final double p2){ //abstraction
         frontRight.setPower(p2);

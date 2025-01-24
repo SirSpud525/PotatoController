@@ -12,17 +12,24 @@ public class AutoRightGood extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
         waitForStart();
+
         //code start
+        robot.jointSet(-1);
+//        robot.driveToInches(55, telemetry);
+//        robot.jointSet(-0.5);
+//        robot.strafe(-925);
+//        robot.jointSet(-0.5);
+//        robot.powerTurn(0.6, 1300);
+//        robot.jointSet(-0.5);
+//        robot.powerTurn(-0.6, 1100);
+//        robot.jointSet(-0.5);
 
-        robot.angularStrafe(55, 2400);
-        robot.raiseSlides(-500);
-        robot.raiseSlides(300);
-        robot.strafe(-1900);
-        robot.driveToInches(96, telemetry);
-        robot.turn(-90);
+//        robot.strafe(-1900);
+//        robot.driveToInches(96, telemetry);
+//        robot.turn(-90);
 
-//        //code end
-        stop();
+        //code end
+//        stop();
     }
 
 }
