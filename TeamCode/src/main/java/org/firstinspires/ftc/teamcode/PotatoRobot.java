@@ -84,7 +84,7 @@ public IMU imu;
         slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        joint.setPosition(0.7);
+        joint.setPosition(1.0);
 
         // Set up the IMU (gyro/angle sensor)
         IMU.Parameters imuParameters = new IMU.Parameters(
@@ -436,9 +436,9 @@ public IMU imu;
     public void jointSet(double AMOUNT){
 
         joint.setPosition(AMOUNT);
-try{
-        Thread.sleep(10000);} catch (InterruptedException e) {
-        }
+//try{
+//        Thread.sleep(10000);} catch (InterruptedException e) {
+//        }
     }
 
 //    public void turn(final int posT) {
@@ -608,7 +608,7 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
     }
 
     //test strafe func, strafes based on starting pos (or imu var)
-    public void angularStrafe(int degrees, int distance) {
+    public void angularStrafe(int degrees, int distance, int breakONend) {
 
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -638,8 +638,10 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 
             enableAllMotors(x / slowdown, y / slowdown);
         }
-
+    if (breakONend == 1){
         drive(0.0);
+    }
+
     }
 
 }
