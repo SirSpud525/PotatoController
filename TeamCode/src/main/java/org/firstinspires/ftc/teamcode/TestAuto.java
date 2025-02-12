@@ -11,7 +11,7 @@ public class TestAuto extends LinearOpMode{
         waitForStart();
         //code here
 
-
+robot.jointSet(0.7);
 
         //code ends
         stop();

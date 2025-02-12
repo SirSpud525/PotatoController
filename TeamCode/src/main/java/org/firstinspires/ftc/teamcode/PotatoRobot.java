@@ -151,9 +151,9 @@ public IMU imu;
         double strafe = (gp1.left_stick_x);
         double turn = (gp1.right_stick_x);
 
-        telemetry.addData("drive", drive);
-        telemetry.addData("strafe", strafe);
-        telemetry.addData("turn", turn);
+//        telemetry.addData("drive", drive);
+//        telemetry.addData("strafe", strafe);
+//        telemetry.addData("turn", turn);
 
 //        flDrivePower = ((-Math.sin(angle + (0.25 * Math.PI)) * magnitude) + turn);
 //        frDrivePower = ((Math.sin(angle - (0.25 * Math.PI)) * magnitude) + turn);
@@ -173,11 +173,11 @@ public IMU imu;
         blDrivePower = (actualDrive - actualStrafe + turn);
         brDrivePower = (actualDrive + actualStrafe - turn);
 
-        telemetry.addData("fl", flDrivePower);
-        telemetry.addData("fr", frDrivePower);
-        telemetry.addData("bl", blDrivePower);
-        telemetry.addData("br", brDrivePower);
-        telemetry.update();
+//        telemetry.addData("fl", flDrivePower);
+//        telemetry.addData("fr", frDrivePower);
+//        telemetry.addData("bl", blDrivePower);
+//        telemetry.addData("br", brDrivePower);
+//        telemetry.update();
 
         double slowdown = 0.85;
 
@@ -231,36 +231,34 @@ public IMU imu;
     }
 
 // raises the arm!!!
-    public void raiseArm(Gamepad gp2){
+    public void raiseArm(Gamepad gp2, Telemetry telemetry){
 
-        double armPwr = 0.55;
+        double armPwr = 0.6;
 
         if (gp2.x){
-            armPwr = 0.65;
+            armPwr = 0.7;
         }
 
-         double rightStick_y = armPwr *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
+        double rightStick_y = armPwr *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
+
         if(Math.abs(gp2.right_stick_y) > 0.1){
+//          arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             arm.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
         } else if (gp2.dpad_down){
-            arm.setPower(-0.2);
+            arm.setPower(-0.25);
         } else if (gp2.dpad_up){
-          arm.setPower(0.2);
+            arm.setPower(0.25);
         } else {
+//            arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            arm.setPower(-0.3 * Math.sin((arm.getCurrentPosition() - 520) / 330));
 
-            // with encoders
-//            if (arm.getCurrentPosition() > 250){
-//                arm.setPower(-0.2);
-//            } else {
-//                arm.setPower(0.12);
-//            }
-//        }
+            }
+        telemetry.addData("armPow", 0.25 * Math.sin((arm.getCurrentPosition() - 520) / 330));
+        telemetry.addData("armPwr", armPwr);
+        telemetry.addData("armPos", arm.getCurrentPosition());
+        telemetry.update();
 
-
-            //without encoders
-            arm.setPower(0.0);
         }
-    }
 
     public void clawClawing(Gamepad gp2){
 
@@ -287,13 +285,18 @@ public IMU imu;
 
     }
 
-    public void slideMovement(Gamepad gp2)
+    public void slideMovement(Gamepad gp2, boolean toggle2)
     {
 
     double slidePower = (gp2.left_stick_y); // Gets the left stick y position of controller
     double slideAbs = Math.abs(slidePower);
     double slideSign = (slidePower/slideAbs);
     double pwr = -0.1;
+
+    if (toggle2) {
+        pwr = 0.6;
+    }
+
     //decides how much power to give slides
     if (gp2.y == true){
         slide1.setPower(0.0);
@@ -311,20 +314,20 @@ public IMU imu;
     }
     }
 
-    public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry, boolean toggle) {
+    public void gamePadPower(Gamepad gp1, Gamepad gp2, Telemetry telemetry, boolean toggle, boolean toggle2) {
         if (toggle == true){
             Driving(gp1, telemetry);
         } else {
             potatoDrive(gp1, telemetry);
         }
-        slideMovement(gp2);
+        slideMovement(gp2, toggle2);
         clawClawing(gp2);
         jointOn(gp2);
-        raiseArm(gp2);
-        telemetry.addData("armPos", arm.getCurrentPosition());
+        raiseArm(gp2, telemetry);
+//        telemetry.addData("armPos", arm.getCurrentPosition());
     }
 
-    private void drive(final double pow){
+    public void drive(final double pow){
         frontLeft.setPower(pow);
         backLeft.setPower(pow);
         frontRight.setPower(pow);
@@ -363,6 +366,8 @@ public IMU imu;
             int frDistance = pos - frontRight.getCurrentPosition();
             int blDistance = pos - backLeft.getCurrentPosition();
             int brDistance = pos - backRight.getCurrentPosition();
+
+            ADDITIONAL_SPEED = (flDistance / Math.abs(flDistance)) * 0.1;
 
             telemetry.addData("dist", flDistance);
             telemetry.update();
@@ -484,8 +489,8 @@ public IMU imu;
 
         double currentPosition = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
         double error = target - currentPosition;
-
-        double kp = 0.5;
+//kp was .5
+        double kp = 1;
 
         final int DELAY = 50;
 
@@ -560,7 +565,7 @@ public IMU imu;
         try {Thread.sleep(50);} catch (InterruptedException e) {}
     }
 
-public void intakeEnable(double rotate, final int seconds){ //0 corresponds to opening, 1 corresponds to closing
+public void intakeEnable(double rotate, final int milliseconds){ //0 corresponds to opening, 1 corresponds to closing
         final double rotationType = rotate;
 
         if (rotationType >= 0.1) {
@@ -571,13 +576,17 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
             intake2.setPower(-1);
         }
 
-        try {Thread.sleep(seconds);} catch (InterruptedException e) {}
+        try {Thread.sleep(milliseconds);} catch (InterruptedException e) {}
 
        intake.setPower (0.0);
        intake2.setPower (0.0);
 
     }
-    
+
+    public void wait(int milliseconds){
+        try {Thread.sleep(milliseconds);} catch (InterruptedException e) {}
+    }
+
 //next two functions are power based auto, only use in emergency or lack of encoders
 //    public void powerArm(double power, int length){
 //
@@ -588,15 +597,17 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
 //        armMotor.setPower(0.0);
 //    }
 //
-    public void powerTurn(double powerT, int lengthT){
+    public void powerTurn(double powerT, int lengthT, double passive){
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         arm.setPower(powerT);
 
         try {Thread.sleep(lengthT);} catch (InterruptedException e) {}
 
         if (powerT >= 0) {
-            arm.setPower(-0.2);
+            arm.setPower(-1 * passive);
         } else {
-            arm.setPower(0.2);
+            arm.setPower(passive);
         }
     }
 
@@ -621,8 +632,8 @@ public void intakeEnable(double rotate, final int seconds){ //0 corresponds to o
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double xDist = 1000;
         double yDist = 1000;
-        final double error = 35;
-        final double slowdown = 1.5;
+        final double error = 100;
+        final double slowdown = 1.8;
 
         while (Math.abs(yDist - frontRight.getCurrentPosition()) > error || Math.abs(xDist - frontLeft.getCurrentPosition()) > error) {
 

@@ -14,6 +14,8 @@ public class MyTeleOp extends OpMode {
 
     boolean lastPass = false;
     boolean toggle = false;
+    boolean lastPass2 = false;
+    boolean toggle2 = false;
 
     @Override
     public void loop() {
@@ -22,8 +24,13 @@ public class MyTeleOp extends OpMode {
             toggle = !toggle;
         }
 
-        lastPass = gamepad1.y;
+        if (gamepad2.a && !lastPass2){
+            toggle2 = !toggle2;
+        }
 
-        robot.gamePadPower(gamepad1, gamepad2, telemetry, toggle);
+        lastPass = gamepad1.y;
+        lastPass2 = gamepad2.a;
+
+        robot.gamePadPower(gamepad1, gamepad2, telemetry, toggle, toggle2);
     }
 }

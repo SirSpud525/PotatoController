@@ -15,24 +15,29 @@ public class AutoRightGood extends LinearOpMode{
 
         //code start
 
-        robot.angularStrafe(135, 1300, 1);
-        robot.driveTo(225, telemetry);
+//      robot.angularStrafe(90, 1085, 1);
+        robot.driveTo(825, telemetry);
+        robot.jointSet(0.3);
+        robot.powerTurn(0.65, 1900, 0.2);
+        robot.wait(200);
+        robot.powerTurn(0.01, 0, 0.3);
 
-//      robot.angularStrafe(0, 0, 1);
-        robot.jointSet(0.2);
-        robot.powerTurn(0.65, 1850);
-
-
-
-        //        robot.driveToInches(55, telemetry);
-//        for(i == -90; i<=0; i++;){
-//            robot.angularStrafe(i, 10, 0);
+        robot.intakeEnable(0, 333);
+        robot.angularStrafe(-20, 1100, 1);
+        robot.angularStrafe(20, 1100, 1);
+        robot.angularStrafe(90, 600,1);
+        robot.raiseSlides(200);
+//        robot.wait(1000);
+//        robot.intakeEnable(0, 333);
+//        robot.angularStrafe(-45, 1000, 1);
+//        int i = -45;
+//        while(i <= 90){
+//            robot.angularStrafe(i, 100, 0);
+//            i++;
 //        }
 
-//        for(i == 180; i<=270; i++;){
-//            robot.angularStrafe(i, 10, 0);
-//        }
-//      robot.angularStrafe(0, 0, 1);
+        robot.drive(0.0);
+
 
 
         //code end
