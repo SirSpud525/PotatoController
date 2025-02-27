@@ -10,18 +10,21 @@ public class TestAuto extends LinearOpMode{
         robot.init(hardwareMap);
         waitForStart();
         //code here
-
-robot.jointSet(0.7);
+//mashed potatoes
+//robot.fastTurn(135);
+        robot.jointSet(0.3);
+robot.wait(5000);
 
         //code ends
         stop();
     }
 
 }
-
+//mashed potatoes
 //donut
 //
 //   for (int i = 0; i < 360; i++ ){
 //        robot.angularStrafe(45, 50);
 //        robot.turn(-1);
 //        }
+//mashed potatoes

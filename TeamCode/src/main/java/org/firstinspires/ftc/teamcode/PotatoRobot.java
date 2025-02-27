@@ -41,7 +41,7 @@ private Servo joint;
 public IMU imu;
 
     //potato
-
+//mashed potatoes
     //var
 
     public void init(final HardwareMap hardwareMap) {
@@ -233,10 +233,14 @@ public IMU imu;
 // raises the arm!!!
     public void raiseArm(Gamepad gp2, Telemetry telemetry){
 
-        double armPwr = 0.6;
+        double armPwr = 0.63;
 
         if (gp2.x){
-            armPwr = 0.7;
+            armPwr = 0.73;
+        }
+        if (gp2.b){
+            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         double rightStick_y = armPwr *(Math.abs(gp2.right_stick_y)/gp2.right_stick_y);
@@ -245,16 +249,17 @@ public IMU imu;
 //          arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             arm.setPower(rightStick_y); // makes the robot arm go up and the "gp2.right_stick" is to slow it down
         } else if (gp2.dpad_down){
-            arm.setPower(-0.25);
+            arm.setPower(-0.27);
         } else if (gp2.dpad_up){
-            arm.setPower(0.25);
+            arm.setPower(0.27);
         } else {
 //            arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            arm.setPower(-0.3 * Math.sin((arm.getCurrentPosition() - 520) / 330));
-
+//            arm.setPower(-0.3 * Math.sin((arm.getCurrentPosition() + 1040) / 330));
+            arm.setPower((-1 * ((0.0005479 * arm.getCurrentPosition()) + 0.2986)) / 2);
             }
-        telemetry.addData("armPow", 0.25 * Math.sin((arm.getCurrentPosition() - 520) / 330));
-        telemetry.addData("armPwr", armPwr);
+//        telemetry.addData("armPow", -0.3 * Math.sin((arm.getCurrentPosition() + 1040) / 330));
+        telemetry.addData("armPow", ((-1* ((0.0005479 * arm.getCurrentPosition()) + 0.2986))) / 2);
+//        telemetry.addData("armPwr", armPwr);
         telemetry.addData("armPos", arm.getCurrentPosition());
         telemetry.update();
 
@@ -292,6 +297,7 @@ public IMU imu;
     double slideAbs = Math.abs(slidePower);
     double slideSign = (slidePower/slideAbs);
     double pwr = -0.1;
+//was -0.1 no encoder
 
     if (toggle2) {
         pwr = 0.6;
@@ -324,7 +330,7 @@ public IMU imu;
         clawClawing(gp2);
         jointOn(gp2);
         raiseArm(gp2, telemetry);
-//        telemetry.addData("armPos", arm.getCurrentPosition());
+//        telemetry.addData("slides", slide1.getCurrentPosition());
     }
 
     public void drive(final double pow){
@@ -400,17 +406,24 @@ public IMU imu;
         slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double additional = -0.1;
+        double additional = -0.15;
+        double sign = -1;
         double distance = 100;
 
         if (amt >= 0){
             additional = 0.1;
+            sign = 1;
         }
 
         while (Math.abs(amt - slide1.getCurrentPosition()) > distance){
             double toGo = amt - slide1.getCurrentPosition();
+            double slidePow;
 
-            double slidePow = toGo/Math.abs(amt);
+            if (toGo < 175){
+                slidePow = toGo/Math.abs(amt);
+            } else {
+                slidePow = sign * 0.85;
+            }
 
             slide1.setPower((slidePow / 2) + additional);
             slide2.setPower((slidePow / 2) + additional);
@@ -446,7 +459,7 @@ public IMU imu;
 //        }
     }
 
-//    public void turn(final int posT) {
+    //    public void turn(final int posT) {
 //        if (posT == 0) return;
 //
 //        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -501,7 +514,6 @@ public IMU imu;
             double proportional = error * kp;
 
             double turn = proportional / (180 * kp);
-
             final double mult = 2.4;
 
             flDrivePower = -turn * mult;
@@ -587,7 +599,7 @@ public void intakeEnable(double rotate, final int milliseconds){ //0 corresponds
         try {Thread.sleep(milliseconds);} catch (InterruptedException e) {}
     }
 
-//next two functions are power based auto, only use in emergency or lack of encoders
+    //next two functions are power based auto, only use in emergency or lack of encoders
 //    public void powerArm(double power, int length){
 //
 //        armMotor.setPower(power);
@@ -652,6 +664,34 @@ public void intakeEnable(double rotate, final int milliseconds){ //0 corresponds
     if (breakONend == 1){
         drive(0.0);
     }
+
+    }
+
+    public void fastTurn(int deg){
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        this.imu.resetYaw();
+        double pos = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
+
+        while(Math.abs(deg - pos) > 15){
+            pos = this.imu.getRobotYawPitchRollAngles().getYaw(DEGREES);
+
+            if (deg - pos >= 0){
+                frontLeft.setPower(0.8);
+                frontRight.setPower(-0.8);
+                backRight.setPower(-0.8);
+                backLeft.setPower(0.8);
+            } else {
+                frontLeft.setPower(-0.8);
+                frontRight.setPower(0.8);
+                backRight.setPower(0.8);
+                backLeft.setPower(-0.8);
+            }
+
+        }
+
+        turn(deg - pos);
 
     }
 
